@@ -35,6 +35,23 @@ type Endpoints struct {
 	DeleteLeaveRequestEndpoint             endpoint.Endpoint
 	GetByIDLeaveRequestEndpoint            endpoint.Endpoint
 	GetLeaveRequestByMultiCriteriaEndpoint endpoint.Endpoint
+	GetConventionEndpoint                  endpoint.Endpoint
+	AddConventionEndpoint                  endpoint.Endpoint
+	DeleteConventionEndpoint               endpoint.Endpoint
+	GetByIDConventionEndpoint              endpoint.Endpoint
+	GetConventionByMultiCriteriaEndpoint   endpoint.Endpoint
+	GetContractTypeEndpoint                endpoint.Endpoint
+	AddContractTypeEndpoint                endpoint.Endpoint
+	DeleteContractTypeEndpoint             endpoint.Endpoint
+	GetByIDContractTypeEndpoint            endpoint.Endpoint
+	GetEmployeeRoleEndpoint                endpoint.Endpoint
+	AddEmployeeRoleEndpoint                endpoint.Endpoint
+	DeleteEmployeeRoleEndpoint             endpoint.Endpoint
+	GetByIDEmployeeRoleEndpoint            endpoint.Endpoint
+	GetRequestTypeEndpoint                 endpoint.Endpoint
+	AddRequestTypeEndpoint                 endpoint.Endpoint
+	DeleteRequestTypeEndpoint              endpoint.Endpoint
+	GetByIDRequestTypeEndpoint             endpoint.Endpoint
 }
 
 // New returns a Endpoints struct that wraps the provided service, and wires in all of the
@@ -42,30 +59,47 @@ type Endpoints struct {
 func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	eps := Endpoints{
 		AddAdminRequestEndpoint:                MakeAddAdminRequestEndpoint(s),
+		AddContractTypeEndpoint:                MakeAddContractTypeEndpoint(s),
+		AddConventionEndpoint:                  MakeAddConventionEndpoint(s),
 		AddDepartmentEndpoint:                  MakeAddDepartmentEndpoint(s),
+		AddEmployeeRoleEndpoint:                MakeAddEmployeeRoleEndpoint(s),
 		AddEndpoint:                            MakeAddEndpoint(s),
 		AddEventEndpoint:                       MakeAddEventEndpoint(s),
 		AddLeaveRequestEndpoint:                MakeAddLeaveRequestEndpoint(s),
+		AddRequestTypeEndpoint:                 MakeAddRequestTypeEndpoint(s),
 		DeleteAdminRequestEndpoint:             MakeDeleteAdminRequestEndpoint(s),
+		DeleteContractTypeEndpoint:             MakeDeleteContractTypeEndpoint(s),
+		DeleteConventionEndpoint:               MakeDeleteConventionEndpoint(s),
 		DeleteDepartmentEndpoint:               MakeDeleteDepartmentEndpoint(s),
+		DeleteEmployeeRoleEndpoint:             MakeDeleteEmployeeRoleEndpoint(s),
 		DeleteEndpoint:                         MakeDeleteEndpoint(s),
 		DeleteEventEndpoint:                    MakeDeleteEventEndpoint(s),
 		DeleteLeaveRequestEndpoint:             MakeDeleteLeaveRequestEndpoint(s),
+		DeleteRequestTypeEndpoint:              MakeDeleteRequestTypeEndpoint(s),
 		GetAdminRequestByMultiCriteriaEndpoint: MakeGetAdminRequestByMultiCriteriaEndpoint(s),
 		GetAdminRequestEndpoint:                MakeGetAdminRequestEndpoint(s),
 		GetByCreteriaEndpoint:                  MakeGetByCreteriaEndpoint(s),
 		GetByIDAdminRequestEndpoint:            MakeGetByIDAdminRequestEndpoint(s),
+		GetByIDContractTypeEndpoint:            MakeGetByIDContractTypeEndpoint(s),
+		GetByIDConventionEndpoint:              MakeGetByIDConventionEndpoint(s),
 		GetByIDDepartmentEndpoint:              MakeGetByIDDepartmentEndpoint(s),
+		GetByIDEmployeeRoleEndpoint:            MakeGetByIDEmployeeRoleEndpoint(s),
 		GetByIDEndpoint:                        MakeGetByIDEndpoint(s),
 		GetByIDEventEndpoint:                   MakeGetByIDEventEndpoint(s),
 		GetByIDLeaveRequestEndpoint:            MakeGetByIDLeaveRequestEndpoint(s),
+		GetByIDRequestTypeEndpoint:             MakeGetByIDRequestTypeEndpoint(s),
 		GetByMultiCriteriaEndpoint:             MakeGetByMultiCriteriaEndpoint(s),
+		GetContractTypeEndpoint:                MakeGetContractTypeEndpoint(s),
+		GetConventionByMultiCriteriaEndpoint:   MakeGetConventionByMultiCriteriaEndpoint(s),
+		GetConventionEndpoint:                  MakeGetConventionEndpoint(s),
 		GetDepartmentEndpoint:                  MakeGetDepartmentEndpoint(s),
+		GetEmployeeRoleEndpoint:                MakeGetEmployeeRoleEndpoint(s),
 		GetEndpoint:                            MakeGetEndpoint(s),
 		GetEventByMultiCriteriaEndpoint:        MakeGetEventByMultiCriteriaEndpoint(s),
 		GetEventEndpoint:                       MakeGetEventEndpoint(s),
 		GetLeaveRequestByMultiCriteriaEndpoint: MakeGetLeaveRequestByMultiCriteriaEndpoint(s),
 		GetLeaveRequestEndpoint:                MakeGetLeaveRequestEndpoint(s),
+		GetRequestTypeEndpoint:                 MakeGetRequestTypeEndpoint(s),
 	}
 	for _, m := range mdw["Get"] {
 		eps.GetEndpoint = m(eps.GetEndpoint)
@@ -141,6 +175,57 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["GetLeaveRequestByMultiCriteria"] {
 		eps.GetLeaveRequestByMultiCriteriaEndpoint = m(eps.GetLeaveRequestByMultiCriteriaEndpoint)
+	}
+	for _, m := range mdw["GetConvention"] {
+		eps.GetConventionEndpoint = m(eps.GetConventionEndpoint)
+	}
+	for _, m := range mdw["AddConvention"] {
+		eps.AddConventionEndpoint = m(eps.AddConventionEndpoint)
+	}
+	for _, m := range mdw["DeleteConvention"] {
+		eps.DeleteConventionEndpoint = m(eps.DeleteConventionEndpoint)
+	}
+	for _, m := range mdw["GetByIDConvention"] {
+		eps.GetByIDConventionEndpoint = m(eps.GetByIDConventionEndpoint)
+	}
+	for _, m := range mdw["GetConventionByMultiCriteria"] {
+		eps.GetConventionByMultiCriteriaEndpoint = m(eps.GetConventionByMultiCriteriaEndpoint)
+	}
+	for _, m := range mdw["GetContractType"] {
+		eps.GetContractTypeEndpoint = m(eps.GetContractTypeEndpoint)
+	}
+	for _, m := range mdw["AddContractType"] {
+		eps.AddContractTypeEndpoint = m(eps.AddContractTypeEndpoint)
+	}
+	for _, m := range mdw["DeleteContractType"] {
+		eps.DeleteContractTypeEndpoint = m(eps.DeleteContractTypeEndpoint)
+	}
+	for _, m := range mdw["GetByIDContractType"] {
+		eps.GetByIDContractTypeEndpoint = m(eps.GetByIDContractTypeEndpoint)
+	}
+	for _, m := range mdw["GetEmployeeRole"] {
+		eps.GetEmployeeRoleEndpoint = m(eps.GetEmployeeRoleEndpoint)
+	}
+	for _, m := range mdw["AddEmployeeRole"] {
+		eps.AddEmployeeRoleEndpoint = m(eps.AddEmployeeRoleEndpoint)
+	}
+	for _, m := range mdw["DeleteEmployeeRole"] {
+		eps.DeleteEmployeeRoleEndpoint = m(eps.DeleteEmployeeRoleEndpoint)
+	}
+	for _, m := range mdw["GetByIDEmployeeRole"] {
+		eps.GetByIDEmployeeRoleEndpoint = m(eps.GetByIDEmployeeRoleEndpoint)
+	}
+	for _, m := range mdw["GetRequestType"] {
+		eps.GetRequestTypeEndpoint = m(eps.GetRequestTypeEndpoint)
+	}
+	for _, m := range mdw["AddRequestType"] {
+		eps.AddRequestTypeEndpoint = m(eps.AddRequestTypeEndpoint)
+	}
+	for _, m := range mdw["DeleteRequestType"] {
+		eps.DeleteRequestTypeEndpoint = m(eps.DeleteRequestTypeEndpoint)
+	}
+	for _, m := range mdw["GetByIDRequestType"] {
+		eps.GetByIDRequestTypeEndpoint = m(eps.GetByIDRequestTypeEndpoint)
 	}
 	return eps
 }

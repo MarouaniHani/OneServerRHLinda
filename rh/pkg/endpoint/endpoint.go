@@ -929,3 +929,621 @@ func (en Endpoints) GetLeaveRequestByMultiCriteria(ctx context.Context, urlMap s
 	}
 	return response.(GetLeaveRequestByMultiCriteriaResponse).L, response.(GetLeaveRequestByMultiCriteriaResponse).Error
 }
+
+// GetConventionRequest collects the request parameters for the GetConvention method.
+type GetConventionRequest struct{}
+
+// GetConventionResponse collects the response parameters for the GetConvention method.
+type GetConventionResponse struct {
+	C     []io.Convention `json:"c"`
+	Error error           `json:"error"`
+}
+
+// MakeGetConventionEndpoint returns an endpoint that invokes GetConvention on the service.
+func MakeGetConventionEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		c, error := s.GetConvention(ctx)
+		return GetConventionResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetConventionResponse) Failed() error {
+	return r.Error
+}
+
+// AddConventionRequest collects the request parameters for the AddConvention method.
+type AddConventionRequest struct {
+	Convention io.Convention `json:"convention"`
+}
+
+// AddConventionResponse collects the response parameters for the AddConvention method.
+type AddConventionResponse struct {
+	C     io.Convention `json:"c"`
+	Error error         `json:"error"`
+}
+
+// MakeAddConventionEndpoint returns an endpoint that invokes AddConvention on the service.
+func MakeAddConventionEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(AddConventionRequest)
+		c, error := s.AddConvention(ctx, req.Convention)
+		return AddConventionResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r AddConventionResponse) Failed() error {
+	return r.Error
+}
+
+// DeleteConventionRequest collects the request parameters for the DeleteConvention method.
+type DeleteConventionRequest struct {
+	Id string `json:"id"`
+}
+
+// DeleteConventionResponse collects the response parameters for the DeleteConvention method.
+type DeleteConventionResponse struct {
+	Error error `json:"error"`
+}
+
+// MakeDeleteConventionEndpoint returns an endpoint that invokes DeleteConvention on the service.
+func MakeDeleteConventionEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteConventionRequest)
+		error := s.DeleteConvention(ctx, req.Id)
+		return DeleteConventionResponse{Error: error}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r DeleteConventionResponse) Failed() error {
+	return r.Error
+}
+
+// GetByIDConventionRequest collects the request parameters for the GetByIDConvention method.
+type GetByIDConventionRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIDConventionResponse collects the response parameters for the GetByIDConvention method.
+type GetByIDConventionResponse struct {
+	C     io.Convention `json:"c"`
+	Error error         `json:"error"`
+}
+
+// MakeGetByIDConventionEndpoint returns an endpoint that invokes GetByIDConvention on the service.
+func MakeGetByIDConventionEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIDConventionRequest)
+		c, error := s.GetByIDConvention(ctx, req.Id)
+		return GetByIDConventionResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIDConventionResponse) Failed() error {
+	return r.Error
+}
+
+// GetConventionByMultiCriteriaRequest collects the request parameters for the GetConventionByMultiCriteria method.
+type GetConventionByMultiCriteriaRequest struct {
+	UrlMap string `json:"url_map"`
+}
+
+// GetConventionByMultiCriteriaResponse collects the response parameters for the GetConventionByMultiCriteria method.
+type GetConventionByMultiCriteriaResponse struct {
+	C     []io.Convention `json:"c"`
+	Error error           `json:"error"`
+}
+
+// MakeGetConventionByMultiCriteriaEndpoint returns an endpoint that invokes GetConventionByMultiCriteria on the service.
+func MakeGetConventionByMultiCriteriaEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetConventionByMultiCriteriaRequest)
+		c, error := s.GetConventionByMultiCriteria(ctx, req.UrlMap)
+		return GetConventionByMultiCriteriaResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetConventionByMultiCriteriaResponse) Failed() error {
+	return r.Error
+}
+
+// GetConvention implements Service. Primarily useful in a client.
+func (en Endpoints) GetConvention(ctx context.Context) (c []io.Convention, error error) {
+	request := GetConventionRequest{}
+	response, err := en.GetConventionEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetConventionResponse).C, response.(GetConventionResponse).Error
+}
+
+// AddConvention implements Service. Primarily useful in a client.
+func (en Endpoints) AddConvention(ctx context.Context, convention io.Convention) (c io.Convention, error error) {
+	request := AddConventionRequest{Convention: convention}
+	response, err := en.AddConventionEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(AddConventionResponse).C, response.(AddConventionResponse).Error
+}
+
+// DeleteConvention implements Service. Primarily useful in a client.
+func (en Endpoints) DeleteConvention(ctx context.Context, id string) (error error) {
+	request := DeleteConventionRequest{Id: id}
+	response, err := en.DeleteConventionEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(DeleteConventionResponse).Error
+}
+
+// GetByIDConvention implements Service. Primarily useful in a client.
+func (en Endpoints) GetByIDConvention(ctx context.Context, id string) (c io.Convention, error error) {
+	request := GetByIDConventionRequest{Id: id}
+	response, err := en.GetByIDConventionEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIDConventionResponse).C, response.(GetByIDConventionResponse).Error
+}
+
+// GetConventionByMultiCriteria implements Service. Primarily useful in a client.
+func (en Endpoints) GetConventionByMultiCriteria(ctx context.Context, urlMap string) (c []io.Convention, error error) {
+	request := GetConventionByMultiCriteriaRequest{UrlMap: urlMap}
+	response, err := en.GetConventionByMultiCriteriaEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetConventionByMultiCriteriaResponse).C, response.(GetConventionByMultiCriteriaResponse).Error
+}
+
+// GetContractTypeRequest collects the request parameters for the GetContractType method.
+type GetContractTypeRequest struct{}
+
+// GetContractTypeResponse collects the response parameters for the GetContractType method.
+type GetContractTypeResponse struct {
+	C     []io.ContractType `json:"c"`
+	Error error             `json:"error"`
+}
+
+// MakeGetContractTypeEndpoint returns an endpoint that invokes GetContractType on the service.
+func MakeGetContractTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		c, error := s.GetContractType(ctx)
+		return GetContractTypeResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetContractTypeResponse) Failed() error {
+	return r.Error
+}
+
+// AddContractTypeRequest collects the request parameters for the AddContractType method.
+type AddContractTypeRequest struct {
+	ContractType io.ContractType `json:"contract_type"`
+}
+
+// AddContractTypeResponse collects the response parameters for the AddContractType method.
+type AddContractTypeResponse struct {
+	C     io.ContractType `json:"c"`
+	Error error           `json:"error"`
+}
+
+// MakeAddContractTypeEndpoint returns an endpoint that invokes AddContractType on the service.
+func MakeAddContractTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(AddContractTypeRequest)
+		c, error := s.AddContractType(ctx, req.ContractType)
+		return AddContractTypeResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r AddContractTypeResponse) Failed() error {
+	return r.Error
+}
+
+// DeleteContractTypeRequest collects the request parameters for the DeleteContractType method.
+type DeleteContractTypeRequest struct {
+	Id string `json:"id"`
+}
+
+// DeleteContractTypeResponse collects the response parameters for the DeleteContractType method.
+type DeleteContractTypeResponse struct {
+	Error error `json:"error"`
+}
+
+// MakeDeleteContractTypeEndpoint returns an endpoint that invokes DeleteContractType on the service.
+func MakeDeleteContractTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteContractTypeRequest)
+		error := s.DeleteContractType(ctx, req.Id)
+		return DeleteContractTypeResponse{Error: error}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r DeleteContractTypeResponse) Failed() error {
+	return r.Error
+}
+
+// GetByIDContractTypeRequest collects the request parameters for the GetByIDContractType method.
+type GetByIDContractTypeRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIDContractTypeResponse collects the response parameters for the GetByIDContractType method.
+type GetByIDContractTypeResponse struct {
+	C     io.ContractType `json:"c"`
+	Error error           `json:"error"`
+}
+
+// MakeGetByIDContractTypeEndpoint returns an endpoint that invokes GetByIDContractType on the service.
+func MakeGetByIDContractTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIDContractTypeRequest)
+		c, error := s.GetByIDContractType(ctx, req.Id)
+		return GetByIDContractTypeResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIDContractTypeResponse) Failed() error {
+	return r.Error
+}
+
+// GetContractType implements Service. Primarily useful in a client.
+func (en Endpoints) GetContractType(ctx context.Context) (c []io.ContractType, error error) {
+	request := GetContractTypeRequest{}
+	response, err := en.GetContractTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetContractTypeResponse).C, response.(GetContractTypeResponse).Error
+}
+
+// AddContractType implements Service. Primarily useful in a client.
+func (en Endpoints) AddContractType(ctx context.Context, contractType io.ContractType) (c io.ContractType, error error) {
+	request := AddContractTypeRequest{ContractType: contractType}
+	response, err := en.AddContractTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(AddContractTypeResponse).C, response.(AddContractTypeResponse).Error
+}
+
+// DeleteContractType implements Service. Primarily useful in a client.
+func (en Endpoints) DeleteContractType(ctx context.Context, id string) (error error) {
+	request := DeleteContractTypeRequest{Id: id}
+	response, err := en.DeleteContractTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(DeleteContractTypeResponse).Error
+}
+
+// GetByIDContractType implements Service. Primarily useful in a client.
+func (en Endpoints) GetByIDContractType(ctx context.Context, id string) (c io.ContractType, error error) {
+	request := GetByIDContractTypeRequest{Id: id}
+	response, err := en.GetByIDContractTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIDContractTypeResponse).C, response.(GetByIDContractTypeResponse).Error
+}
+
+// GetEmployeeRoleRequest collects the request parameters for the GetEmployeeRole method.
+type GetEmployeeRoleRequest struct{}
+
+// GetEmployeeRoleResponse collects the response parameters for the GetEmployeeRole method.
+type GetEmployeeRoleResponse struct {
+	R     []io.EmployeeRole `json:"r"`
+	Error error             `json:"error"`
+}
+
+// MakeGetEmployeeRoleEndpoint returns an endpoint that invokes GetEmployeeRole on the service.
+func MakeGetEmployeeRoleEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		r, error := s.GetEmployeeRole(ctx)
+		return GetEmployeeRoleResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetEmployeeRoleResponse) Failed() error {
+	return r.Error
+}
+
+// AddEmployeeRoleRequest collects the request parameters for the AddEmployeeRole method.
+type AddEmployeeRoleRequest struct {
+	EmployeeRole io.EmployeeRole `json:"employee_role"`
+}
+
+// AddEmployeeRoleResponse collects the response parameters for the AddEmployeeRole method.
+type AddEmployeeRoleResponse struct {
+	R     io.EmployeeRole `json:"r"`
+	Error error           `json:"error"`
+}
+
+// MakeAddEmployeeRoleEndpoint returns an endpoint that invokes AddEmployeeRole on the service.
+func MakeAddEmployeeRoleEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(AddEmployeeRoleRequest)
+		r, error := s.AddEmployeeRole(ctx, req.EmployeeRole)
+		return AddEmployeeRoleResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r AddEmployeeRoleResponse) Failed() error {
+	return r.Error
+}
+
+// DeleteEmployeeRoleRequest collects the request parameters for the DeleteEmployeeRole method.
+type DeleteEmployeeRoleRequest struct {
+	Id string `json:"id"`
+}
+
+// DeleteEmployeeRoleResponse collects the response parameters for the DeleteEmployeeRole method.
+type DeleteEmployeeRoleResponse struct {
+	Error error `json:"error"`
+}
+
+// MakeDeleteEmployeeRoleEndpoint returns an endpoint that invokes DeleteEmployeeRole on the service.
+func MakeDeleteEmployeeRoleEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteEmployeeRoleRequest)
+		error := s.DeleteEmployeeRole(ctx, req.Id)
+		return DeleteEmployeeRoleResponse{Error: error}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r DeleteEmployeeRoleResponse) Failed() error {
+	return r.Error
+}
+
+// GetByIDEmployeeRoleRequest collects the request parameters for the GetByIDEmployeeRole method.
+type GetByIDEmployeeRoleRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIDEmployeeRoleResponse collects the response parameters for the GetByIDEmployeeRole method.
+type GetByIDEmployeeRoleResponse struct {
+	R     io.EmployeeRole `json:"r"`
+	Error error           `json:"error"`
+}
+
+// MakeGetByIDEmployeeRoleEndpoint returns an endpoint that invokes GetByIDEmployeeRole on the service.
+func MakeGetByIDEmployeeRoleEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIDEmployeeRoleRequest)
+		r, error := s.GetByIDEmployeeRole(ctx, req.Id)
+		return GetByIDEmployeeRoleResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIDEmployeeRoleResponse) Failed() error {
+	return r.Error
+}
+
+// GetEmployeeRole implements Service. Primarily useful in a client.
+func (en Endpoints) GetEmployeeRole(ctx context.Context) (r []io.EmployeeRole, error error) {
+	request := GetEmployeeRoleRequest{}
+	response, err := en.GetEmployeeRoleEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetEmployeeRoleResponse).R, response.(GetEmployeeRoleResponse).Error
+}
+
+// AddEmployeeRole implements Service. Primarily useful in a client.
+func (en Endpoints) AddEmployeeRole(ctx context.Context, employeeRole io.EmployeeRole) (r io.EmployeeRole, error error) {
+	request := AddEmployeeRoleRequest{EmployeeRole: employeeRole}
+	response, err := en.AddEmployeeRoleEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(AddEmployeeRoleResponse).R, response.(AddEmployeeRoleResponse).Error
+}
+
+// DeleteEmployeeRole implements Service. Primarily useful in a client.
+func (en Endpoints) DeleteEmployeeRole(ctx context.Context, id string) (error error) {
+	request := DeleteEmployeeRoleRequest{Id: id}
+	response, err := en.DeleteEmployeeRoleEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(DeleteEmployeeRoleResponse).Error
+}
+
+// GetByIDEmployeeRole implements Service. Primarily useful in a client.
+func (en Endpoints) GetByIDEmployeeRole(ctx context.Context, id string) (r io.EmployeeRole, error error) {
+	request := GetByIDEmployeeRoleRequest{Id: id}
+	response, err := en.GetByIDEmployeeRoleEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIDEmployeeRoleResponse).R, response.(GetByIDEmployeeRoleResponse).Error
+}
+
+// GetRequestTypeRequest collects the request parameters for the GetRequestType method.
+type GetRequestTypeRequest struct{}
+
+// GetRequestTypeResponse collects the response parameters for the GetRequestType method.
+type GetRequestTypeResponse struct {
+	R     []io.RequestType `json:"r"`
+	Error error            `json:"error"`
+}
+
+// MakeGetRequestTypeEndpoint returns an endpoint that invokes GetRequestType on the service.
+func MakeGetRequestTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		r, error := s.GetRequestType(ctx)
+		return GetRequestTypeResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetRequestTypeResponse) Failed() error {
+	return r.Error
+}
+
+// AddRequestTypeRequest collects the request parameters for the AddRequestType method.
+type AddRequestTypeRequest struct {
+	RequestType io.RequestType `json:"request_type"`
+}
+
+// AddRequestTypeResponse collects the response parameters for the AddRequestType method.
+type AddRequestTypeResponse struct {
+	R     io.RequestType `json:"r"`
+	Error error          `json:"error"`
+}
+
+// MakeAddRequestTypeEndpoint returns an endpoint that invokes AddRequestType on the service.
+func MakeAddRequestTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(AddRequestTypeRequest)
+		r, error := s.AddRequestType(ctx, req.RequestType)
+		return AddRequestTypeResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r AddRequestTypeResponse) Failed() error {
+	return r.Error
+}
+
+// DeleteRequestTypeRequest collects the request parameters for the DeleteRequestType method.
+type DeleteRequestTypeRequest struct {
+	Id string `json:"id"`
+}
+
+// DeleteRequestTypeResponse collects the response parameters for the DeleteRequestType method.
+type DeleteRequestTypeResponse struct {
+	Error error `json:"error"`
+}
+
+// MakeDeleteRequestTypeEndpoint returns an endpoint that invokes DeleteRequestType on the service.
+func MakeDeleteRequestTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteRequestTypeRequest)
+		error := s.DeleteRequestType(ctx, req.Id)
+		return DeleteRequestTypeResponse{Error: error}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r DeleteRequestTypeResponse) Failed() error {
+	return r.Error
+}
+
+// GetByIDRequestTypeRequest collects the request parameters for the GetByIDRequestType method.
+type GetByIDRequestTypeRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIDRequestTypeResponse collects the response parameters for the GetByIDRequestType method.
+type GetByIDRequestTypeResponse struct {
+	R     io.RequestType `json:"r"`
+	Error error          `json:"error"`
+}
+
+// MakeGetByIDRequestTypeEndpoint returns an endpoint that invokes GetByIDRequestType on the service.
+func MakeGetByIDRequestTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIDRequestTypeRequest)
+		r, error := s.GetByIDRequestType(ctx, req.Id)
+		return GetByIDRequestTypeResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIDRequestTypeResponse) Failed() error {
+	return r.Error
+}
+
+// GetRequestType implements Service. Primarily useful in a client.
+func (en Endpoints) GetRequestType(ctx context.Context) (r []io.RequestType, error error) {
+	request := GetRequestTypeRequest{}
+	response, err := en.GetRequestTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetRequestTypeResponse).R, response.(GetRequestTypeResponse).Error
+}
+
+// AddRequestType implements Service. Primarily useful in a client.
+func (en Endpoints) AddRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error) {
+	request := AddRequestTypeRequest{RequestType: requestType}
+	response, err := en.AddRequestTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(AddRequestTypeResponse).R, response.(AddRequestTypeResponse).Error
+}
+
+// DeleteRequestType implements Service. Primarily useful in a client.
+func (en Endpoints) DeleteRequestType(ctx context.Context, id string) (error error) {
+	request := DeleteRequestTypeRequest{Id: id}
+	response, err := en.DeleteRequestTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(DeleteRequestTypeResponse).Error
+}
+
+// GetByIDRequestType implements Service. Primarily useful in a client.
+func (en Endpoints) GetByIDRequestType(ctx context.Context, id string) (r io.RequestType, error error) {
+	request := GetByIDRequestTypeRequest{Id: id}
+	response, err := en.GetByIDRequestTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIDRequestTypeResponse).R, response.(GetByIDRequestTypeResponse).Error
+}

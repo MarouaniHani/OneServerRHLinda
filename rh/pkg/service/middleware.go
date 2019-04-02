@@ -179,3 +179,109 @@ func (lo loggingMiddleware) GetLeaveRequestByMultiCriteria(ctx context.Context, 
 	}()
 	return lo.next.GetLeaveRequestByMultiCriteria(ctx, urlMap)
 }
+
+func (lo loggingMiddleware) GetConvention(ctx context.Context) (c []io.Convention, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetConvention", "c", c, "error", error)
+	}()
+	return lo.next.GetConvention(ctx)
+}
+func (lo loggingMiddleware) AddConvention(ctx context.Context, convention io.Convention) (c io.Convention, error error) {
+	defer func() {
+		lo.logger.Log("method", "AddConvention", "convention", convention, "c", c, "error", error)
+	}()
+	return lo.next.AddConvention(ctx, convention)
+}
+func (lo loggingMiddleware) DeleteConvention(ctx context.Context, id string) (error error) {
+	defer func() {
+		lo.logger.Log("method", "DeleteConvention", "id", id, "error", error)
+	}()
+	return lo.next.DeleteConvention(ctx, id)
+}
+func (lo loggingMiddleware) GetByIDConvention(ctx context.Context, id string) (c io.Convention, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetByIDConvention", "id", id, "c", c, "error", error)
+	}()
+	return lo.next.GetByIDConvention(ctx, id)
+}
+func (lo loggingMiddleware) GetConventionByMultiCriteria(ctx context.Context, urlMap string) (c []io.Convention, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetConventionByMultiCriteria", "urlMap", urlMap, "c", c, "error", error)
+	}()
+	return lo.next.GetConventionByMultiCriteria(ctx, urlMap)
+}
+
+func (lo loggingMiddleware) GetContractType(ctx context.Context) (c []io.ContractType, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetContractType", "c", c, "error", error)
+	}()
+	return lo.next.GetContractType(ctx)
+}
+func (lo loggingMiddleware) AddContractType(ctx context.Context, contractType io.ContractType) (c io.ContractType, error error) {
+	defer func() {
+		lo.logger.Log("method", "AddContractType", "contractType", contractType, "c", c, "error", error)
+	}()
+	return lo.next.AddContractType(ctx, contractType)
+}
+func (lo loggingMiddleware) DeleteContractType(ctx context.Context, id string) (error error) {
+	defer func() {
+		lo.logger.Log("method", "DeleteContractType", "id", id, "error", error)
+	}()
+	return lo.next.DeleteContractType(ctx, id)
+}
+func (lo loggingMiddleware) GetByIDContractType(ctx context.Context, id string) (c io.ContractType, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetByIDContractType", "id", id, "c", c, "error", error)
+	}()
+	return lo.next.GetByIDContractType(ctx, id)
+}
+
+func (lo loggingMiddleware) GetEmployeeRole(ctx context.Context) (r []io.EmployeeRole, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetEmployeeRole", "r", r, "error", error)
+	}()
+	return lo.next.GetEmployeeRole(ctx)
+}
+func (lo loggingMiddleware) AddEmployeeRole(ctx context.Context, employeeRole io.EmployeeRole) (r io.EmployeeRole, error error) {
+	defer func() {
+		lo.logger.Log("method", "AddEmployeeRole", "employeeRole", employeeRole, "r", r, "error", error)
+	}()
+	return lo.next.AddEmployeeRole(ctx, employeeRole)
+}
+func (lo loggingMiddleware) DeleteEmployeeRole(ctx context.Context, id string) (error error) {
+	defer func() {
+		lo.logger.Log("method", "DeleteEmployeeRole", "id", id, "error", error)
+	}()
+	return lo.next.DeleteEmployeeRole(ctx, id)
+}
+func (lo loggingMiddleware) GetByIDEmployeeRole(ctx context.Context, id string) (r io.EmployeeRole, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetByIDEmployeeRole", "id", id, "r", r, "error", error)
+	}()
+	return lo.next.GetByIDEmployeeRole(ctx, id)
+}
+
+func (lo loggingMiddleware) GetRequestType(ctx context.Context) (r []io.RequestType, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetRequestType", "r", r, "error", error)
+	}()
+	return lo.next.GetRequestType(ctx)
+}
+func (lo loggingMiddleware) AddRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error) {
+	defer func() {
+		lo.logger.Log("method", "AddRequestType", "requestType", requestType, "r", r, "error", error)
+	}()
+	return lo.next.AddRequestType(ctx, requestType)
+}
+func (lo loggingMiddleware) DeleteRequestType(ctx context.Context, id string) (error error) {
+	defer func() {
+		lo.logger.Log("method", "DeleteRequestType", "id", id, "error", error)
+	}()
+	return lo.next.DeleteRequestType(ctx, id)
+}
+func (lo loggingMiddleware) GetByIDRequestType(ctx context.Context, id string) (r io.RequestType, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetByIDRequestType", "id", id, "r", r, "error", error)
+	}()
+	return lo.next.GetByIDRequestType(ctx, id)
+}

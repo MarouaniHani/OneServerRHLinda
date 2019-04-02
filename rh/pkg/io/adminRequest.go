@@ -6,6 +6,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//AdminRequest ...
 type AdminRequest struct {
 	Id              bson.ObjectId `json:"id" bson:"_id"`
 	NumberOfPaper   int           `json:"NumberOfPaper" bson:"NumberOfPaper"`

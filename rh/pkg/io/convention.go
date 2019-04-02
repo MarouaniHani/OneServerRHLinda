@@ -8,8 +8,8 @@ import (
 
 type Convention struct {
 	Id                    bson.ObjectId `json:"id" bson:"_id"`
-	ConventionName        string        `json:"LeaveReason" bson:"LeaveReason"`
-	ConventionDescription string        `json:"LeaveStartDate" bson:"LeaveStartDate"`
+	ConventionName        string        `json:"ConventionName" bson:"ConventionName"`
+	ConventionDescription string        `json:"ConventionDescription" bson:"ConventionDescription"`
 	// DocumentId            bson.ObjectId `json:"LeaveEndDate" bson:"LeaveEndDate"`
 	// AddedBy               bson.ObjectId `json:"ApplicationDate" bson:"ApplicationDate"`
 

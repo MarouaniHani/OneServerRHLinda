@@ -23,29 +23,46 @@ func defaultHttpOptions(logger log.Logger, tracer opentracinggo.Tracer) map[stri
 	options := map[string][]http.ServerOption{
 		"Add":                            {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "Add", logger))},
 		"AddAdminRequest":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddAdminRequest", logger))},
+		"AddContractType":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddContractType", logger))},
+		"AddConvention":                  {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddConvention", logger))},
 		"AddDepartment":                  {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddDepartment", logger))},
+		"AddEmployeeRole":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddEmployeeRole", logger))},
 		"AddEvent":                       {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddEvent", logger))},
 		"AddLeaveRequest":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddLeaveRequest", logger))},
+		"AddRequestType":                 {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "AddRequestType", logger))},
 		"Delete":                         {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "Delete", logger))},
 		"DeleteAdminRequest":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteAdminRequest", logger))},
+		"DeleteContractType":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteContractType", logger))},
+		"DeleteConvention":               {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteConvention", logger))},
 		"DeleteDepartment":               {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteDepartment", logger))},
+		"DeleteEmployeeRole":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteEmployeeRole", logger))},
 		"DeleteEvent":                    {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteEvent", logger))},
 		"DeleteLeaveRequest":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteLeaveRequest", logger))},
+		"DeleteRequestType":              {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "DeleteRequestType", logger))},
 		"Get":                            {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "Get", logger))},
 		"GetAdminRequest":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetAdminRequest", logger))},
 		"GetAdminRequestByMultiCriteria": {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetAdminRequestByMultiCriteria", logger))},
 		"GetByCreteria":                  {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByCreteria", logger))},
 		"GetByID":                        {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByID", logger))},
 		"GetByIDAdminRequest":            {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDAdminRequest", logger))},
+		"GetByIDContractType":            {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDContractType", logger))},
+		"GetByIDConvention":              {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDConvention", logger))},
 		"GetByIDDepartment":              {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDDepartment", logger))},
+		"GetByIDEmployeeRole":            {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDEmployeeRole", logger))},
 		"GetByIDEvent":                   {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDEvent", logger))},
 		"GetByIDLeaveRequest":            {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDLeaveRequest", logger))},
+		"GetByIDRequestType":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByIDRequestType", logger))},
 		"GetByMultiCriteria":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetByMultiCriteria", logger))},
+		"GetContractType":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetContractType", logger))},
+		"GetConvention":                  {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetConvention", logger))},
+		"GetConventionByMultiCriteria":   {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetConventionByMultiCriteria", logger))},
 		"GetDepartment":                  {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetDepartment", logger))},
+		"GetEmployeeRole":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetEmployeeRole", logger))},
 		"GetEvent":                       {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetEvent", logger))},
 		"GetEventByMultiCriteria":        {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetEventByMultiCriteria", logger))},
 		"GetLeaveRequest":                {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetLeaveRequest", logger))},
 		"GetLeaveRequestByMultiCriteria": {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetLeaveRequestByMultiCriteria", logger))},
+		"GetRequestType":                 {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetRequestType", logger))},
 	}
 	return options
 }
@@ -75,12 +92,29 @@ func addDefaultEndpointMiddleware(logger log.Logger, duration *prometheus.Summar
 	mw["DeleteLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteLeaveRequest"))}
 	mw["GetByIDLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDLeaveRequest"))}
 	mw["GetLeaveRequestByMultiCriteria"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetLeaveRequestByMultiCriteria")), endpoint.InstrumentingMiddleware(duration.With("method", "GetLeaveRequestByMultiCriteria"))}
+	mw["GetConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "GetConvention"))}
+	mw["AddConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "AddConvention"))}
+	mw["DeleteConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteConvention"))}
+	mw["GetByIDConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDConvention"))}
+	mw["GetConventionByMultiCriteria"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetConventionByMultiCriteria")), endpoint.InstrumentingMiddleware(duration.With("method", "GetConventionByMultiCriteria"))}
+	mw["GetContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetContractType"))}
+	mw["AddContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "AddContractType"))}
+	mw["DeleteContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteContractType"))}
+	mw["GetByIDContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDContractType"))}
+	mw["GetEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "GetEmployeeRole"))}
+	mw["AddEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "AddEmployeeRole"))}
+	mw["DeleteEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteEmployeeRole"))}
+	mw["GetByIDEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDEmployeeRole"))}
+	mw["GetRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetRequestType"))}
+	mw["AddRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "AddRequestType"))}
+	mw["DeleteRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteRequestType"))}
+	mw["GetByIDRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDRequestType"))}
 }
 func addDefaultServiceMiddleware(logger log.Logger, mw []service.Middleware) []service.Middleware {
 	return append(mw, service.LoggingMiddleware(logger))
 }
 func addEndpointMiddlewareToAllMethods(mw map[string][]endpoint1.Middleware, m endpoint1.Middleware) {
-	methods := []string{"Get", "Add", "Delete", "GetByID", "GetByCreteria", "GetByMultiCriteria", "GetDepartment", "AddDepartment", "DeleteDepartment", "GetByIDDepartment", "GetEvent", "AddEvent", "DeleteEvent", "GetByIDEvent", "GetEventByMultiCriteria", "GetAdminRequest", "AddAdminRequest", "DeleteAdminRequest", "GetByIDAdminRequest", "GetAdminRequestByMultiCriteria", "GetLeaveRequest", "AddLeaveRequest", "DeleteLeaveRequest", "GetByIDLeaveRequest", "GetLeaveRequestByMultiCriteria"}
+	methods := []string{"Get", "Add", "Delete", "GetByID", "GetByCreteria", "GetByMultiCriteria", "GetDepartment", "AddDepartment", "DeleteDepartment", "GetByIDDepartment", "GetEvent", "AddEvent", "DeleteEvent", "GetByIDEvent", "GetEventByMultiCriteria", "GetAdminRequest", "AddAdminRequest", "DeleteAdminRequest", "GetByIDAdminRequest", "GetAdminRequestByMultiCriteria", "GetLeaveRequest", "AddLeaveRequest", "DeleteLeaveRequest", "GetByIDLeaveRequest", "GetLeaveRequestByMultiCriteria", "GetConvention", "AddConvention", "DeleteConvention", "GetByIDConvention", "GetConventionByMultiCriteria", "GetContractType", "AddContractType", "DeleteContractType", "GetByIDContractType", "GetEmployeeRole", "AddEmployeeRole", "DeleteEmployeeRole", "GetByIDEmployeeRole", "GetRequestType", "AddRequestType", "DeleteRequestType", "GetByIDRequestType"}
 	for _, v := range methods {
 		mw[v] = append(mw[v], m)
 	}

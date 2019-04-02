@@ -44,6 +44,27 @@ type RhService interface {
 	DeleteLeaveRequest(ctx context.Context, id string) (error error)
 	GetByIDLeaveRequest(ctx context.Context, id string) (l io.LeaveRequest, error error)
 	GetLeaveRequestByMultiCriteria(ctx context.Context, urlMap string) (l []io.LeaveRequest, error error)
+	//Convention services
+	GetConvention(ctx context.Context) (c []io.Convention, error error)
+	AddConvention(ctx context.Context, convention io.Convention) (c io.Convention, error error)
+	DeleteConvention(ctx context.Context, id string) (error error)
+	GetByIDConvention(ctx context.Context, id string) (c io.Convention, error error)
+	GetConventionByMultiCriteria(ctx context.Context, urlMap string) (c []io.Convention, error error)
+	//Cantarct Type services
+	GetContractType(ctx context.Context) (c []io.ContractType, error error)
+	AddContractType(ctx context.Context, contractType io.ContractType) (c io.ContractType, error error)
+	DeleteContractType(ctx context.Context, id string) (error error)
+	GetByIDContractType(ctx context.Context, id string) (c io.ContractType, error error)
+	//Employee Role services
+	GetEmployeeRole(ctx context.Context) (r []io.EmployeeRole, error error)
+	AddEmployeeRole(ctx context.Context, employeeRole io.EmployeeRole) (r io.EmployeeRole, error error)
+	DeleteEmployeeRole(ctx context.Context, id string) (error error)
+	GetByIDEmployeeRole(ctx context.Context, id string) (r io.EmployeeRole, error error)
+	//Request Type services
+	GetRequestType(ctx context.Context) (r []io.RequestType, error error)
+	AddRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error)
+	DeleteRequestType(ctx context.Context, id string) (error error)
+	GetByIDRequestType(ctx context.Context, id string) (r io.RequestType, error error)
 }
 
 type basicRhService struct{}
@@ -368,6 +389,7 @@ func (b *basicRhService) GetAdminRequestByMultiCriteria(ctx context.Context, url
 	return a, error
 }
 func (b *basicRhService) GetLeaveRequest(ctx context.Context) (l []io.LeaveRequest, error error) {
+	fmt.Println("entered in leave reason GET")
 	session, err := db.GetMongoSession()
 	if err != nil {
 		return l, err
@@ -378,6 +400,7 @@ func (b *basicRhService) GetLeaveRequest(ctx context.Context) (l []io.LeaveReque
 	return l, error
 }
 func (b *basicRhService) AddLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error) {
+	fmt.Println("entered in leave reason ADD")
 	leaveRequest.Id = bson.NewObjectId()
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -455,6 +478,186 @@ func (b *basicRhService) GetLeaveRequestByMultiCriteria(ctx context.Context, url
 		}
 	} */
 	return l, error
+}
+
+func (b *basicRhService) GetConvention(ctx context.Context) (c []io.Convention, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("conventions")
+	error = d.Find(nil).All(&c)
+	return c, error
+}
+func (b *basicRhService) AddConvention(ctx context.Context, convention io.Convention) (c io.Convention, error error) {
+	convention.Id = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("conventions")
+	error = d.Insert(&convention)
+	return convention, error
+}
+func (b *basicRhService) DeleteConvention(ctx context.Context, id string) (error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("conventions")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+}
+func (b *basicRhService) GetByIDConvention(ctx context.Context, id string) (c io.Convention, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("conventions")
+	error = d.FindId(bson.ObjectIdHex(id)).One(&c)
+	return c, error
+}
+func (b *basicRhService) GetConventionByMultiCriteria(ctx context.Context, urlMap string) (c []io.Convention, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("conventions")
+	qm := utils.QlSeparator(urlMap)
+	if qm["ConventionName"] != "" {
+		error1 := d.Find(bson.M{"ConventionName": qm["ConventionName"]}).All(&c)
+		fmt.Println("services conventions :", error1)
+		if error1 == nil {
+			error = error1
+		}
+	}
+	return c, error
+}
+func (b *basicRhService) GetContractType(ctx context.Context) (c []io.ContractType, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("contractTypes")
+	error = d.Find(nil).All(&c)
+	return c, error
+}
+func (b *basicRhService) AddContractType(ctx context.Context, contractType io.ContractType) (c io.ContractType, error error) {
+	contractType.Id = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("contractTypes")
+	error = d.Insert(&contractType)
+	return contractType, error
+}
+func (b *basicRhService) DeleteContractType(ctx context.Context, id string) (error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("contractTypes")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+}
+func (b *basicRhService) GetByIDContractType(ctx context.Context, id string) (c io.ContractType, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return c, err
+	}
+	defer session.Close()
+	d := session.DB("Linda_app").C("contractTypes")
+	error = d.FindId(bson.ObjectIdHex(id)).One(&c)
+	return c, error
+}
+
+func (b *basicRhService) GetEmployeeRole(ctx context.Context) (r []io.EmployeeRole, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return r, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("employeeRoles")
+	error = c.Find(nil).All(&r)
+	return r, error
+}
+func (b *basicRhService) AddEmployeeRole(ctx context.Context, employeeRole io.EmployeeRole) (r io.EmployeeRole, error error) {
+	employeeRole.ID = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return r, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("employeeRoles")
+	error = c.Insert(&employeeRole)
+	return employeeRole, error
+}
+func (b *basicRhService) DeleteEmployeeRole(ctx context.Context, id string) (error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("employeeRoles")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+}
+func (b *basicRhService) GetByIDEmployeeRole(ctx context.Context, id string) (r io.EmployeeRole, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return r, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("employeeRoles")
+	error = c.FindId(bson.ObjectIdHex(id)).One(&r)
+	return r, error
+}
+
+func (b *basicRhService) GetRequestType(ctx context.Context) (r []io.RequestType, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return r, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("requestTypes")
+	error = c.Find(nil).All(&r)
+	return r, error
+}
+func (b *basicRhService) AddRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error) {
+	requestType.ID = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return r, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("requestTypes")
+	error = c.Insert(&requestType)
+	return requestType, error
+}
+func (b *basicRhService) DeleteRequestType(ctx context.Context, id string) (error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("requestTypes")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+}
+func (b *basicRhService) GetByIDRequestType(ctx context.Context, id string) (r io.RequestType, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return r, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("requestTypes")
+	error = c.FindId(bson.ObjectIdHex(id)).One(&r)
+	return r, error
 }
 
 // NewBasicRhService returns a naive, stateless implementation of RhService.
