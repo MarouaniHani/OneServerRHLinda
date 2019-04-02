@@ -1,0 +1,7 @@
+package: onServicemgo
+import:
+- package: github.com/go-kit/kit
+- package: github.com/gorilla/mux
+  version: v1.7.0
+- package: github.com/gorilla/handlers
+  version: v1.4.0
