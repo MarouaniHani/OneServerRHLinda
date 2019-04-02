@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	http1 "net/http"
 	endpoint "onServicemgo/rh/pkg/endpoint"
 	"onServicemgo/rh/pkg/io"
@@ -710,6 +711,175 @@ func decodeGetAdminRequestByMultiCriteriaRequest(_ context.Context, r *http1.Req
 // encodeGetAdminRequestByMultiCriteriaResponse is a transport/http.EncodeResponseFunc that encodes
 // the response as JSON to the response writer
 func encodeGetAdminRequestByMultiCriteriaResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeGetLeaveRequestHandler creates the handler logic
+func makeGetLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("GET").Path("/leave_request/").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"GET"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.GetLeaveRequestEndpoint, decodeGetLeaveRequestRequest, encodeGetLeaveRequestResponse, options...)))
+}
+
+// decodeGetLeaveRequestRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeGetLeaveRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	req := endpoint.GetLeaveRequestRequest{}
+	return req, nil
+}
+
+// encodeGetLeaveRequestResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeGetLeaveRequestResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeAddLeaveRequestHandler creates the handler logic
+func makeAddLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("POST", "OPTIONS").Path("/leave_request/").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"POST"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.AddLeaveRequestEndpoint, decodeAddLeaveRequestRequest, encodeAddLeaveRequestResponse, options...)))
+}
+
+// decodeAddLeaveRequestRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeAddLeaveRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	leaveRequeststatus, _ := strconv.ParseBool(r.FormValue("RequestStatus"))
+	req := endpoint.AddLeaveRequestRequest{
+		io.LeaveRequest{
+			ApplicationDate: r.FormValue("ApplicationDate"),
+			LeaveStartDate:  r.FormValue("LeaveStartDate"),
+			LeaveEndDate:    r.FormValue("LeaveEndDate"),
+			LeaveReason:     r.FormValue("LeaveReason"),
+			RequestStatus:   leaveRequeststatus,
+		},
+	}
+	return req, nil
+}
+
+// encodeAddLeaveRequestResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeAddLeaveRequestResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeDeleteLeaveRequestHandler creates the handler logic
+func makeDeleteLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("DELETE", "OPTIONS").Path("/leave_request/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"DELETE"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.DeleteLeaveRequestEndpoint, decodeDeleteLeaveRequestRequest, encodeDeleteLeaveRequestResponse, options...)))
+}
+
+// decodeDeleteLeaveRequestRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeDeleteLeaveRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.DeleteLeaveRequestRequest{
+		Id: id,
+	}
+	return req, nil
+}
+
+// encodeDeleteLeaveRequestResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeDeleteLeaveRequestResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeGetByIDLeaveRequestHandler creates the handler logic
+func makeGetByIDLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("GET").Path("/leave_request/{id}").Handler(
+		handlers.CORS(handlers.AllowedMethods([]string{"GET"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.GetByIDLeaveRequestEndpoint, decodeGetByIDLeaveRequestRequest, encodeGetByIDLeaveRequestResponse, options...)))
+}
+
+// decodeGetByIDLeaveRequestRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeGetByIDLeaveRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.GetByIDLeaveRequestRequest{
+		Id: id,
+	}
+	return req, nil
+}
+
+// encodeGetByIDLeaveRequestResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeGetByIDLeaveRequestResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeGetLeaveRequestByMultiCriteriaHandler creates the handler logic
+func makeGetLeaveRequestByMultiCriteriaHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("GET", "OPTIONS").Path("/leave_request/criteria/").Handler(
+		handlers.CORS(handlers.AllowedMethods([]string{"GET"}),
+			handlers.AllowedHeaders([]string{"Content-Type", "Content-Length"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.GetLeaveRequestByMultiCriteriaEndpoint, decodeGetLeaveRequestByMultiCriteriaRequest, encodeGetLeaveRequestByMultiCriteriaResponse, options...)))
+}
+
+// decodeGetLeaveRequestByMultiCriteriaRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeGetLeaveRequestByMultiCriteriaRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	fmt.Println("handler ", r.URL.String())
+	req := endpoint.GetLeaveRequestByMultiCriteriaRequest{
+		UrlMap: r.URL.String(),
+	}
+	return req, nil
+}
+
+// encodeGetLeaveRequestByMultiCriteriaResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeGetLeaveRequestByMultiCriteriaResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil

@@ -148,3 +148,34 @@ func (l loggingMiddleware) GetAdminRequestByMultiCriteria(ctx context.Context, u
 	}()
 	return l.next.GetAdminRequestByMultiCriteria(ctx, urlMap)
 }
+
+func (lo loggingMiddleware) GetLeaveRequest(ctx context.Context) (l []io.LeaveRequest, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetLeaveRequest", "l", l, "error", error)
+	}()
+	return lo.next.GetLeaveRequest(ctx)
+}
+func (lo loggingMiddleware) AddLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error) {
+	defer func() {
+		lo.logger.Log("method", "AddLeaveRequest", "leaveRequest", leaveRequest, "l", l, "error", error)
+	}()
+	return lo.next.AddLeaveRequest(ctx, leaveRequest)
+}
+func (lo loggingMiddleware) DeleteLeaveRequest(ctx context.Context, id string) (error error) {
+	defer func() {
+		lo.logger.Log("method", "DeleteLeaveRequest", "id", id, "error", error)
+	}()
+	return lo.next.DeleteLeaveRequest(ctx, id)
+}
+func (lo loggingMiddleware) GetByIDLeaveRequest(ctx context.Context, id string) (l io.LeaveRequest, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetByIDLeaveRequest", "id", id, "l", l, "error", error)
+	}()
+	return lo.next.GetByIDLeaveRequest(ctx, id)
+}
+func (lo loggingMiddleware) GetLeaveRequestByMultiCriteria(ctx context.Context, urlMap string) (l []io.LeaveRequest, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetLeaveRequestByMultiCriteria", "urlMap", urlMap, "l", l, "error", error)
+	}()
+	return lo.next.GetLeaveRequestByMultiCriteria(ctx, urlMap)
+}

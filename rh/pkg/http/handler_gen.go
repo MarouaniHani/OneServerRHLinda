@@ -32,5 +32,10 @@ func NewHTTPHandler(endpoints endpoint.Endpoints, options map[string][]http.Serv
 	makeDeleteAdminRequestHandler(m, endpoints, options["DeleteAdminRequest"])
 	makeGetByIDAdminRequestHandler(m, endpoints, options["GetByIDAdminRequest"])
 	makeGetAdminRequestByMultiCriteriaHandler(m, endpoints, options["GetAdminRequestByMultiCriteria"])
+	makeGetLeaveRequestHandler(m, endpoints, options["GetLeaveRequest"])
+	makeAddLeaveRequestHandler(m, endpoints, options["AddLeaveRequest"])
+	makeDeleteLeaveRequestHandler(m, endpoints, options["DeleteLeaveRequest"])
+	makeGetByIDLeaveRequestHandler(m, endpoints, options["GetByIDLeaveRequest"])
+	makeGetLeaveRequestByMultiCriteriaHandler(m, endpoints, options["GetLeaveRequestByMultiCriteria"])
 	return m
 }

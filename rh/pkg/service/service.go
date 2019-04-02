@@ -38,6 +38,12 @@ type RhService interface {
 	DeleteAdminRequest(ctx context.Context, id string) (error error)
 	GetByIDAdminRequest(ctx context.Context, id string) (a io.AdminRequest, error error)
 	GetAdminRequestByMultiCriteria(ctx context.Context, urlMap string) (a []io.AdminRequest, error error)
+	//Leave Request services
+	GetLeaveRequest(ctx context.Context) (l []io.LeaveRequest, error error)
+	AddLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error)
+	DeleteLeaveRequest(ctx context.Context, id string) (error error)
+	GetByIDLeaveRequest(ctx context.Context, id string) (l io.LeaveRequest, error error)
+	GetLeaveRequestByMultiCriteria(ctx context.Context, urlMap string) (l []io.LeaveRequest, error error)
 }
 
 type basicRhService struct{}
@@ -360,6 +366,95 @@ func (b *basicRhService) GetAdminRequestByMultiCriteria(ctx context.Context, url
 		}
 	} */
 	return a, error
+}
+func (b *basicRhService) GetLeaveRequest(ctx context.Context) (l []io.LeaveRequest, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return l, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("leaveRequests")
+	error = c.Find(nil).All(&l)
+	return l, error
+}
+func (b *basicRhService) AddLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error) {
+	leaveRequest.Id = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return l, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("leaveRequests")
+	error = c.Insert(&leaveRequest)
+	return leaveRequest, error
+}
+func (b *basicRhService) DeleteLeaveRequest(ctx context.Context, id string) (error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("leaveRequests")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+}
+func (b *basicRhService) GetByIDLeaveRequest(ctx context.Context, id string) (l io.LeaveRequest, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return l, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("leaveRequests")
+	error = c.FindId(bson.ObjectIdHex(id)).One(&l)
+	return l, error
+}
+func (b *basicRhService) GetLeaveRequestByMultiCriteria(ctx context.Context, urlMap string) (l []io.LeaveRequest, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return l, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("leaveRequests")
+	qm := utils.QlSeparator(urlMap)
+	// fmt.Println("leave start date :", qm["LeaveStartDate"])
+	/* if qm["ApliedBy"] != "" {
+		error1 := c.Find(bson.M{"ApliedBy": qm["ApliedBy"]}).All(&l)
+		if error1 == nil {
+			error = error1
+		}
+	} */
+	/* if qm["ApprouvedBy"] != "" {
+		error1 := c.Find(bson.M{"ApprouvedBy": qm["ApprouvedBy"]}).All(&l)
+		if error1 == nil {
+			error = error1
+		}
+	} */
+	if qm["LeaveStartDate"] != "" {
+
+		error1 := c.Find(bson.M{"LeaveStartDate": qm["LeaveStartDate"]}).All(&l)
+		if error1 == nil {
+			error = error1
+		}
+	}
+	if qm["LeaveEndDate"] != "" {
+		error1 := c.Find(bson.M{"LeaveEndDate": qm["LeaveEndDate"]}).All(&l)
+		if error1 == nil {
+			error = error1
+		}
+	}
+	if qm["RequestStatus"] != "" {
+		LeaveReqStatus, _ := strconv.ParseBool(qm["RequestStatus"])
+		error1 := c.Find(bson.M{"RequestStatus": LeaveReqStatus}).All(&l)
+		if error1 == nil {
+			error = error1
+		}
+	}
+	/* if qm["RequestType"] != "" {
+		error1 := c.Find(bson.M{"RequestType": qm["RequestType"]}).All(&l)
+		if error1 == nil {
+			error = error1
+		}
+	} */
+	return l, error
 }
 
 // NewBasicRhService returns a naive, stateless implementation of RhService.

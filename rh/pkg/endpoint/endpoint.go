@@ -746,3 +746,186 @@ func (en Endpoints) GetAdminRequestByMultiCriteria(ctx context.Context, urlMap s
 	}
 	return response.(GetAdminRequestByMultiCriteriaResponse).A, response.(GetAdminRequestByMultiCriteriaResponse).Error
 }
+
+// GetLeaveRequestRequest collects the request parameters for the GetLeaveRequest method.
+type GetLeaveRequestRequest struct{}
+
+// GetLeaveRequestResponse collects the response parameters for the GetLeaveRequest method.
+type GetLeaveRequestResponse struct {
+	L     []io.LeaveRequest `json:"l"`
+	Error error             `json:"error"`
+}
+
+// MakeGetLeaveRequestEndpoint returns an endpoint that invokes GetLeaveRequest on the service.
+func MakeGetLeaveRequestEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		l, error := s.GetLeaveRequest(ctx)
+		return GetLeaveRequestResponse{
+			Error: error,
+			L:     l,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetLeaveRequestResponse) Failed() error {
+	return r.Error
+}
+
+// AddLeaveRequestRequest collects the request parameters for the AddLeaveRequest method.
+type AddLeaveRequestRequest struct {
+	LeaveRequest io.LeaveRequest `json:"leave_request"`
+}
+
+// AddLeaveRequestResponse collects the response parameters for the AddLeaveRequest method.
+type AddLeaveRequestResponse struct {
+	L     io.LeaveRequest `json:"l"`
+	Error error           `json:"error"`
+}
+
+// MakeAddLeaveRequestEndpoint returns an endpoint that invokes AddLeaveRequest on the service.
+func MakeAddLeaveRequestEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(AddLeaveRequestRequest)
+		l, error := s.AddLeaveRequest(ctx, req.LeaveRequest)
+		return AddLeaveRequestResponse{
+			Error: error,
+			L:     l,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r AddLeaveRequestResponse) Failed() error {
+	return r.Error
+}
+
+// DeleteLeaveRequestRequest collects the request parameters for the DeleteLeaveRequest method.
+type DeleteLeaveRequestRequest struct {
+	Id string `json:"id"`
+}
+
+// DeleteLeaveRequestResponse collects the response parameters for the DeleteLeaveRequest method.
+type DeleteLeaveRequestResponse struct {
+	Error error `json:"error"`
+}
+
+// MakeDeleteLeaveRequestEndpoint returns an endpoint that invokes DeleteLeaveRequest on the service.
+func MakeDeleteLeaveRequestEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteLeaveRequestRequest)
+		error := s.DeleteLeaveRequest(ctx, req.Id)
+		return DeleteLeaveRequestResponse{Error: error}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r DeleteLeaveRequestResponse) Failed() error {
+	return r.Error
+}
+
+// GetByIDLeaveRequestRequest collects the request parameters for the GetByIDLeaveRequest method.
+type GetByIDLeaveRequestRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIDLeaveRequestResponse collects the response parameters for the GetByIDLeaveRequest method.
+type GetByIDLeaveRequestResponse struct {
+	L     io.LeaveRequest `json:"l"`
+	Error error           `json:"error"`
+}
+
+// MakeGetByIDLeaveRequestEndpoint returns an endpoint that invokes GetByIDLeaveRequest on the service.
+func MakeGetByIDLeaveRequestEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIDLeaveRequestRequest)
+		l, error := s.GetByIDLeaveRequest(ctx, req.Id)
+		return GetByIDLeaveRequestResponse{
+			Error: error,
+			L:     l,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIDLeaveRequestResponse) Failed() error {
+	return r.Error
+}
+
+// GetLeaveRequestByMultiCriteriaRequest collects the request parameters for the GetLeaveRequestByMultiCriteria method.
+type GetLeaveRequestByMultiCriteriaRequest struct {
+	UrlMap string `json:"url_map"`
+}
+
+// GetLeaveRequestByMultiCriteriaResponse collects the response parameters for the GetLeaveRequestByMultiCriteria method.
+type GetLeaveRequestByMultiCriteriaResponse struct {
+	L     []io.LeaveRequest `json:"l"`
+	Error error             `json:"error"`
+}
+
+// MakeGetLeaveRequestByMultiCriteriaEndpoint returns an endpoint that invokes GetLeaveRequestByMultiCriteria on the service.
+func MakeGetLeaveRequestByMultiCriteriaEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetLeaveRequestByMultiCriteriaRequest)
+		l, error := s.GetLeaveRequestByMultiCriteria(ctx, req.UrlMap)
+		return GetLeaveRequestByMultiCriteriaResponse{
+			Error: error,
+			L:     l,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetLeaveRequestByMultiCriteriaResponse) Failed() error {
+	return r.Error
+}
+
+// GetLeaveRequest implements Service. Primarily useful in a client.
+func (en Endpoints) GetLeaveRequest(ctx context.Context) (l []io.LeaveRequest, error error) {
+	request := GetLeaveRequestRequest{}
+	response, err := en.GetLeaveRequestEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetLeaveRequestResponse).L, response.(GetLeaveRequestResponse).Error
+}
+
+// AddLeaveRequest implements Service. Primarily useful in a client.
+func (en Endpoints) AddLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error) {
+	request := AddLeaveRequestRequest{LeaveRequest: leaveRequest}
+	response, err := en.AddLeaveRequestEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(AddLeaveRequestResponse).L, response.(AddLeaveRequestResponse).Error
+}
+
+// DeleteLeaveRequest implements Service. Primarily useful in a client.
+func (en Endpoints) DeleteLeaveRequest(ctx context.Context, id string) (error error) {
+	request := DeleteLeaveRequestRequest{Id: id}
+	response, err := en.DeleteLeaveRequestEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(DeleteLeaveRequestResponse).Error
+}
+
+// GetByIDLeaveRequest implements Service. Primarily useful in a client.
+func (en Endpoints) GetByIDLeaveRequest(ctx context.Context, id string) (l io.LeaveRequest, error error) {
+	request := GetByIDLeaveRequestRequest{Id: id}
+	response, err := en.GetByIDLeaveRequestEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIDLeaveRequestResponse).L, response.(GetByIDLeaveRequestResponse).Error
+}
+
+// GetLeaveRequestByMultiCriteria implements Service. Primarily useful in a client.
+func (en Endpoints) GetLeaveRequestByMultiCriteria(ctx context.Context, urlMap string) (l []io.LeaveRequest, error error) {
+	request := GetLeaveRequestByMultiCriteriaRequest{UrlMap: urlMap}
+	response, err := en.GetLeaveRequestByMultiCriteriaEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetLeaveRequestByMultiCriteriaResponse).L, response.(GetLeaveRequestByMultiCriteriaResponse).Error
+}

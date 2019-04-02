@@ -30,6 +30,11 @@ type Endpoints struct {
 	DeleteAdminRequestEndpoint             endpoint.Endpoint
 	GetByIDAdminRequestEndpoint            endpoint.Endpoint
 	GetAdminRequestByMultiCriteriaEndpoint endpoint.Endpoint
+	GetLeaveRequestEndpoint                endpoint.Endpoint
+	AddLeaveRequestEndpoint                endpoint.Endpoint
+	DeleteLeaveRequestEndpoint             endpoint.Endpoint
+	GetByIDLeaveRequestEndpoint            endpoint.Endpoint
+	GetLeaveRequestByMultiCriteriaEndpoint endpoint.Endpoint
 }
 
 // New returns a Endpoints struct that wraps the provided service, and wires in all of the
@@ -40,10 +45,12 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		AddDepartmentEndpoint:                  MakeAddDepartmentEndpoint(s),
 		AddEndpoint:                            MakeAddEndpoint(s),
 		AddEventEndpoint:                       MakeAddEventEndpoint(s),
+		AddLeaveRequestEndpoint:                MakeAddLeaveRequestEndpoint(s),
 		DeleteAdminRequestEndpoint:             MakeDeleteAdminRequestEndpoint(s),
 		DeleteDepartmentEndpoint:               MakeDeleteDepartmentEndpoint(s),
 		DeleteEndpoint:                         MakeDeleteEndpoint(s),
 		DeleteEventEndpoint:                    MakeDeleteEventEndpoint(s),
+		DeleteLeaveRequestEndpoint:             MakeDeleteLeaveRequestEndpoint(s),
 		GetAdminRequestByMultiCriteriaEndpoint: MakeGetAdminRequestByMultiCriteriaEndpoint(s),
 		GetAdminRequestEndpoint:                MakeGetAdminRequestEndpoint(s),
 		GetByCreteriaEndpoint:                  MakeGetByCreteriaEndpoint(s),
@@ -51,11 +58,14 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		GetByIDDepartmentEndpoint:              MakeGetByIDDepartmentEndpoint(s),
 		GetByIDEndpoint:                        MakeGetByIDEndpoint(s),
 		GetByIDEventEndpoint:                   MakeGetByIDEventEndpoint(s),
+		GetByIDLeaveRequestEndpoint:            MakeGetByIDLeaveRequestEndpoint(s),
 		GetByMultiCriteriaEndpoint:             MakeGetByMultiCriteriaEndpoint(s),
 		GetDepartmentEndpoint:                  MakeGetDepartmentEndpoint(s),
 		GetEndpoint:                            MakeGetEndpoint(s),
 		GetEventByMultiCriteriaEndpoint:        MakeGetEventByMultiCriteriaEndpoint(s),
 		GetEventEndpoint:                       MakeGetEventEndpoint(s),
+		GetLeaveRequestByMultiCriteriaEndpoint: MakeGetLeaveRequestByMultiCriteriaEndpoint(s),
+		GetLeaveRequestEndpoint:                MakeGetLeaveRequestEndpoint(s),
 	}
 	for _, m := range mdw["Get"] {
 		eps.GetEndpoint = m(eps.GetEndpoint)
@@ -116,6 +126,21 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["GetAdminRequestByMultiCriteria"] {
 		eps.GetAdminRequestByMultiCriteriaEndpoint = m(eps.GetAdminRequestByMultiCriteriaEndpoint)
+	}
+	for _, m := range mdw["GetLeaveRequest"] {
+		eps.GetLeaveRequestEndpoint = m(eps.GetLeaveRequestEndpoint)
+	}
+	for _, m := range mdw["AddLeaveRequest"] {
+		eps.AddLeaveRequestEndpoint = m(eps.AddLeaveRequestEndpoint)
+	}
+	for _, m := range mdw["DeleteLeaveRequest"] {
+		eps.DeleteLeaveRequestEndpoint = m(eps.DeleteLeaveRequestEndpoint)
+	}
+	for _, m := range mdw["GetByIDLeaveRequest"] {
+		eps.GetByIDLeaveRequestEndpoint = m(eps.GetByIDLeaveRequestEndpoint)
+	}
+	for _, m := range mdw["GetLeaveRequestByMultiCriteria"] {
+		eps.GetLeaveRequestByMultiCriteriaEndpoint = m(eps.GetLeaveRequestByMultiCriteriaEndpoint)
 	}
 	return eps
 }
