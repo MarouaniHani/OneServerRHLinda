@@ -18,6 +18,7 @@ type RhService interface {
 	Get(ctx context.Context) (e []io.Employee, error error)
 	Add(ctx context.Context, employee io.Employee) (e io.Employee, error error)
 	Delete(ctx context.Context, id string) (error error)
+	Update(ctx context.Context, employee io.Employee) (e io.Employee, error error)
 	GetByID(ctx context.Context, id string) (e io.Employee, error error)
 	GetByCreteria(ctx context.Context, creteria string) (e []io.Employee, error error)
 	GetByMultiCriteria(ctx context.Context, urlMap string) (e []io.Employee, error error)
@@ -65,10 +66,16 @@ type RhService interface {
 	AddRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error)
 	DeleteRequestType(ctx context.Context, id string) (error error)
 	GetByIDRequestType(ctx context.Context, id string) (r io.RequestType, error error)
+	//Document Type services
+	GetDocumentType(ctx context.Context) (d []io.DocumentType, error error)
+	AddDocumentType(ctx context.Context, documentType io.DocumentType) (d io.DocumentType, error error)
+	DeleteDocumentType(ctx context.Context, id string) (error error)
+	GetByIDDocumentType(ctx context.Context, id string) (d io.DocumentType, error error)
 }
 
 type basicRhService struct{}
 
+// Employee services
 func (b *basicRhService) Get(ctx context.Context) (e []io.Employee, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -81,6 +88,9 @@ func (b *basicRhService) Get(ctx context.Context) (e []io.Employee, error error)
 }
 func (b *basicRhService) Add(ctx context.Context, employee io.Employee) (e io.Employee, error error) {
 	employee.Id = bson.NewObjectId()
+	for i := 0; i < len(employee.Docs); i++ {
+		employee.Docs[i].ID = bson.NewObjectId()
+	}
 	session, err := db.GetMongoSession()
 	if err != nil {
 		return e, err
@@ -99,6 +109,32 @@ func (b *basicRhService) Delete(ctx context.Context, id string) (error error) {
 	c := session.DB("Linda_app").C("employees")
 	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 }
+func (b *basicRhService) Update(ctx context.Context, employee io.Employee) (e io.Employee, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return e, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("employees")
+	error = c.Update(bson.M{"_id": employee.Id},
+		bson.M{"$set": bson.M{"EmployeeName": employee.EmployeeName,
+			"EmployeeEmail":        employee.EmployeeEmail,
+			"Address":              employee.Address,
+			"ZipCode":              employee.ZipCode,
+			"EmployeeBirthDate":    employee.EmployeeBirthDate,
+			"EmployeeNumTel":       employee.EmployeeNumTel,
+			"EmergencyContactName": employee.EmergencyContactName,
+			"EmergencyContactTel":  employee.EmergencyContactTel,
+			"EmployeeStartDate":    employee.EmployeeStartDate,
+			"EmployeeSalary":       employee.EmployeeSalary,
+			"EmployeeIban":         employee.EmployeeIban,
+			"EmployeeBic":          employee.EmployeeBic,
+			"Docs":                 employee.Docs,
+		}})
+	fmt.Println("check values :", employee.Address)
+	return employee, error
+}
+
 func (b *basicRhService) GetByID(ctx context.Context, id string) (e io.Employee, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -109,7 +145,6 @@ func (b *basicRhService) GetByID(ctx context.Context, id string) (e io.Employee,
 	error = c.FindId(bson.ObjectIdHex(id)).One(&e)
 	return e, error
 }
-
 func (b *basicRhService) GetByCreteria(ctx context.Context, creteria string) (e []io.Employee, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -123,7 +158,6 @@ func (b *basicRhService) GetByCreteria(ctx context.Context, creteria string) (e 
 	}
 	return e, error
 }
-
 func (b *basicRhService) GetByMultiCriteria(ctx context.Context, urlMap string) (e []io.Employee, error error) {
 
 	session, err := db.GetMongoSession()
@@ -214,6 +248,8 @@ func (b *basicRhService) GetByMultiCriteria(ctx context.Context, urlMap string) 
 
 	return e, error
 }
+
+// Department services
 func (b *basicRhService) GetDepartment(ctx context.Context) (d []io.Department, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -255,6 +291,7 @@ func (b *basicRhService) GetByIDDepartment(ctx context.Context, id string) (d io
 	return d, error
 }
 
+// Event services
 func (b *basicRhService) GetEvent(ctx context.Context) (d []io.Event, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -317,6 +354,8 @@ func (b *basicRhService) GetEventByMultiCriteria(ctx context.Context, urlMap str
 	}
 	return e, error
 }
+
+// Admin request services
 func (b *basicRhService) GetAdminRequest(ctx context.Context) (a []io.AdminRequest, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -388,6 +427,8 @@ func (b *basicRhService) GetAdminRequestByMultiCriteria(ctx context.Context, url
 	} */
 	return a, error
 }
+
+// Leave request services
 func (b *basicRhService) GetLeaveRequest(ctx context.Context) (l []io.LeaveRequest, error error) {
 	fmt.Println("entered in leave reason GET")
 	session, err := db.GetMongoSession()
@@ -480,6 +521,7 @@ func (b *basicRhService) GetLeaveRequestByMultiCriteria(ctx context.Context, url
 	return l, error
 }
 
+// Convention services
 func (b *basicRhService) GetConvention(ctx context.Context) (c []io.Convention, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -537,6 +579,8 @@ func (b *basicRhService) GetConventionByMultiCriteria(ctx context.Context, urlMa
 	}
 	return c, error
 }
+
+// Contract Type services
 func (b *basicRhService) GetContractType(ctx context.Context) (c []io.ContractType, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -578,6 +622,7 @@ func (b *basicRhService) GetByIDContractType(ctx context.Context, id string) (c 
 	return c, error
 }
 
+// Employee role services
 func (b *basicRhService) GetEmployeeRole(ctx context.Context) (r []io.EmployeeRole, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -619,6 +664,7 @@ func (b *basicRhService) GetByIDEmployeeRole(ctx context.Context, id string) (r 
 	return r, error
 }
 
+// Request Type services
 func (b *basicRhService) GetRequestType(ctx context.Context) (r []io.RequestType, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -658,6 +704,48 @@ func (b *basicRhService) GetByIDRequestType(ctx context.Context, id string) (r i
 	c := session.DB("Linda_app").C("requestTypes")
 	error = c.FindId(bson.ObjectIdHex(id)).One(&r)
 	return r, error
+}
+
+// Document Type services
+func (b *basicRhService) GetDocumentType(ctx context.Context) (d []io.DocumentType, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return d, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("documentTypes")
+	error = c.Find(nil).All(&d)
+	return d, error
+}
+func (b *basicRhService) AddDocumentType(ctx context.Context, documentType io.DocumentType) (d io.DocumentType, error error) {
+	documentType.ID = bson.NewObjectId()
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return d, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("documentTypes")
+	error = c.Insert(&documentType)
+	return documentType, error
+}
+func (b *basicRhService) DeleteDocumentType(ctx context.Context, id string) (error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("documentTypes")
+	return c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
+}
+func (b *basicRhService) GetByIDDocumentType(ctx context.Context, id string) (d io.DocumentType, error error) {
+	session, err := db.GetMongoSession()
+	if err != nil {
+		return d, err
+	}
+	defer session.Close()
+	c := session.DB("Linda_app").C("documentTypes")
+	error = c.FindId(bson.ObjectIdHex(id)).One(&d)
+	return d, error
 }
 
 // NewBasicRhService returns a naive, stateless implementation of RhService.

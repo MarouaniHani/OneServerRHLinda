@@ -285,3 +285,35 @@ func (lo loggingMiddleware) GetByIDRequestType(ctx context.Context, id string) (
 	}()
 	return lo.next.GetByIDRequestType(ctx, id)
 }
+
+func (lo loggingMiddleware) GetDocumentType(ctx context.Context) (d []io.DocumentType, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetDocumentType", "d", d, "error", error)
+	}()
+	return lo.next.GetDocumentType(ctx)
+}
+func (lo loggingMiddleware) AddDocumentType(ctx context.Context, documentType io.DocumentType) (d io.DocumentType, error error) {
+	defer func() {
+		lo.logger.Log("method", "AddDocumentType", "documentType", documentType, "d", d, "error", error)
+	}()
+	return lo.next.AddDocumentType(ctx, documentType)
+}
+func (lo loggingMiddleware) DeleteDocumentType(ctx context.Context, id string) (error error) {
+	defer func() {
+		lo.logger.Log("method", "DeleteDocumentType", "id", id, "error", error)
+	}()
+	return lo.next.DeleteDocumentType(ctx, id)
+}
+func (lo loggingMiddleware) GetByIDDocumentType(ctx context.Context, id string) (d io.DocumentType, error error) {
+	defer func() {
+		lo.logger.Log("method", "GetByIDDocumentType", "id", id, "d", d, "error", error)
+	}()
+	return lo.next.GetByIDDocumentType(ctx, id)
+}
+
+func (lo loggingMiddleware) Update(ctx context.Context, employee io.Employee) (e io.Employee, error error) {
+	defer func() {
+		lo.logger.Log("method", "Update", "employee", employee, "e", e, "error", error)
+	}()
+	return lo.next.Update(ctx, employee)
+}

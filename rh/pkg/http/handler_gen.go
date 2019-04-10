@@ -15,6 +15,7 @@ func NewHTTPHandler(endpoints endpoint.Endpoints, options map[string][]http.Serv
 	makeGetHandler(m, endpoints, options["Get"])
 	makeAddHandler(m, endpoints, options["Add"])
 	makeDeleteHandler(m, endpoints, options["Delete"])
+	makeUpdateHandler(m, endpoints, options["Update"])
 	makeGetByIDHandler(m, endpoints, options["GetByID"])
 	makeGetByCreteriaHandler(m, endpoints, options["GetByCreteria"])
 	makeGetByMultiCriteriaHandler(m, endpoints, options["GetByMultiCriteria"])
@@ -54,5 +55,9 @@ func NewHTTPHandler(endpoints endpoint.Endpoints, options map[string][]http.Serv
 	makeAddRequestTypeHandler(m, endpoints, options["AddRequestType"])
 	makeDeleteRequestTypeHandler(m, endpoints, options["DeleteRequestType"])
 	makeGetByIDRequestTypeHandler(m, endpoints, options["GetByIDRequestType"])
+	makeGetDocumentTypeHandler(m, endpoints, options["GetDocumentType"])
+	makeAddDocumentTypeHandler(m, endpoints, options["AddDocumentType"])
+	makeDeleteDocumentTypeHandler(m, endpoints, options["DeleteDocumentType"])
+	makeGetByIDDocumentTypeHandler(m, endpoints, options["GetByIDDocumentType"])
 	return m
 }

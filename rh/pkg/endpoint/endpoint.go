@@ -1547,3 +1547,186 @@ func (en Endpoints) GetByIDRequestType(ctx context.Context, id string) (r io.Req
 	}
 	return response.(GetByIDRequestTypeResponse).R, response.(GetByIDRequestTypeResponse).Error
 }
+
+// GetDocumentTypeRequest collects the request parameters for the GetDocumentType method.
+type GetDocumentTypeRequest struct{}
+
+// GetDocumentTypeResponse collects the response parameters for the GetDocumentType method.
+type GetDocumentTypeResponse struct {
+	D     []io.DocumentType `json:"d"`
+	Error error             `json:"error"`
+}
+
+// MakeGetDocumentTypeEndpoint returns an endpoint that invokes GetDocumentType on the service.
+func MakeGetDocumentTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		d, error := s.GetDocumentType(ctx)
+		return GetDocumentTypeResponse{
+			D:     d,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetDocumentTypeResponse) Failed() error {
+	return r.Error
+}
+
+// AddDocumentTypeRequest collects the request parameters for the AddDocumentType method.
+type AddDocumentTypeRequest struct {
+	DocumentType io.DocumentType `json:"document_type"`
+}
+
+// AddDocumentTypeResponse collects the response parameters for the AddDocumentType method.
+type AddDocumentTypeResponse struct {
+	D     io.DocumentType `json:"d"`
+	Error error           `json:"error"`
+}
+
+// MakeAddDocumentTypeEndpoint returns an endpoint that invokes AddDocumentType on the service.
+func MakeAddDocumentTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(AddDocumentTypeRequest)
+		d, error := s.AddDocumentType(ctx, req.DocumentType)
+		return AddDocumentTypeResponse{
+			D:     d,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r AddDocumentTypeResponse) Failed() error {
+	return r.Error
+}
+
+// DeleteDocumentTypeRequest collects the request parameters for the DeleteDocumentType method.
+type DeleteDocumentTypeRequest struct {
+	Id string `json:"id"`
+}
+
+// DeleteDocumentTypeResponse collects the response parameters for the DeleteDocumentType method.
+type DeleteDocumentTypeResponse struct {
+	Error error `json:"error"`
+}
+
+// MakeDeleteDocumentTypeEndpoint returns an endpoint that invokes DeleteDocumentType on the service.
+func MakeDeleteDocumentTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(DeleteDocumentTypeRequest)
+		error := s.DeleteDocumentType(ctx, req.Id)
+		return DeleteDocumentTypeResponse{Error: error}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r DeleteDocumentTypeResponse) Failed() error {
+	return r.Error
+}
+
+// GetByIDDocumentTypeRequest collects the request parameters for the GetByIDDocumentType method.
+type GetByIDDocumentTypeRequest struct {
+	Id string `json:"id"`
+}
+
+// GetByIDDocumentTypeResponse collects the response parameters for the GetByIDDocumentType method.
+type GetByIDDocumentTypeResponse struct {
+	D     io.DocumentType `json:"d"`
+	Error error           `json:"error"`
+}
+
+// MakeGetByIDDocumentTypeEndpoint returns an endpoint that invokes GetByIDDocumentType on the service.
+func MakeGetByIDDocumentTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(GetByIDDocumentTypeRequest)
+		d, error := s.GetByIDDocumentType(ctx, req.Id)
+		return GetByIDDocumentTypeResponse{
+			D:     d,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r GetByIDDocumentTypeResponse) Failed() error {
+	return r.Error
+}
+
+// GetDocumentType implements Service. Primarily useful in a client.
+func (en Endpoints) GetDocumentType(ctx context.Context) (d []io.DocumentType, error error) {
+	request := GetDocumentTypeRequest{}
+	response, err := en.GetDocumentTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetDocumentTypeResponse).D, response.(GetDocumentTypeResponse).Error
+}
+
+// AddDocumentType implements Service. Primarily useful in a client.
+func (en Endpoints) AddDocumentType(ctx context.Context, documentType io.DocumentType) (d io.DocumentType, error error) {
+	request := AddDocumentTypeRequest{DocumentType: documentType}
+	response, err := en.AddDocumentTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(AddDocumentTypeResponse).D, response.(AddDocumentTypeResponse).Error
+}
+
+// DeleteDocumentType implements Service. Primarily useful in a client.
+func (en Endpoints) DeleteDocumentType(ctx context.Context, id string) (error error) {
+	request := DeleteDocumentTypeRequest{Id: id}
+	response, err := en.DeleteDocumentTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(DeleteDocumentTypeResponse).Error
+}
+
+// GetByIDDocumentType implements Service. Primarily useful in a client.
+func (en Endpoints) GetByIDDocumentType(ctx context.Context, id string) (d io.DocumentType, error error) {
+	request := GetByIDDocumentTypeRequest{Id: id}
+	response, err := en.GetByIDDocumentTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(GetByIDDocumentTypeResponse).D, response.(GetByIDDocumentTypeResponse).Error
+}
+
+// UpdateRequest collects the request parameters for the Update method.
+type UpdateRequest struct {
+	Employee io.Employee `json:"employee"`
+}
+
+// UpdateResponse collects the response parameters for the Update method.
+type UpdateResponse struct {
+	E     io.Employee `json:"e"`
+	Error error       `json:"error"`
+}
+
+// MakeUpdateEndpoint returns an endpoint that invokes Update on the service.
+func MakeUpdateEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateRequest)
+		e, error := s.Update(ctx, req.Employee)
+		return UpdateResponse{
+			E:     e,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateResponse) Failed() error {
+	return r.Error
+}
+
+// Update implements Service. Primarily useful in a client.
+func (en Endpoints) Update(ctx context.Context, employee io.Employee) (e io.Employee, error error) {
+	request := UpdateRequest{Employee: employee}
+	response, err := en.UpdateEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateResponse).E, response.(UpdateResponse).Error
+}

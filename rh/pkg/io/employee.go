@@ -20,7 +20,12 @@ type Employee struct {
 	EmployeeSalary       float64       `json:"EmployeeSalary" bson:"EmployeeSalary"`
 	EmployeeIban         int           `json:"EmployeeIban" bson:"EmployeeIban"`
 	EmployeeBic          int           `json:"EmployeeBic" bson:"EmployeeBic"`
-	DepartmentID         bson.ObjectId `json:"DepartmentID" bson:"DepartmentID"`
+	Docs                 []Doc
+}
+type Doc struct {
+	ID              bson.ObjectId `json:"id" bson:"_id"`
+	DocumentTitle   string        `json:"DocumentTitle" bson:"DocumentTitle"`
+	DocumentContent string        `json:"DocumentContent" bson:"DocumentContent"`
 }
 
 func (t Employee) String() string {

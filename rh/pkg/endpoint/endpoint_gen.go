@@ -13,6 +13,7 @@ type Endpoints struct {
 	GetEndpoint                            endpoint.Endpoint
 	AddEndpoint                            endpoint.Endpoint
 	DeleteEndpoint                         endpoint.Endpoint
+	UpdateEndpoint                         endpoint.Endpoint
 	GetByIDEndpoint                        endpoint.Endpoint
 	GetByCreteriaEndpoint                  endpoint.Endpoint
 	GetByMultiCriteriaEndpoint             endpoint.Endpoint
@@ -52,6 +53,10 @@ type Endpoints struct {
 	AddRequestTypeEndpoint                 endpoint.Endpoint
 	DeleteRequestTypeEndpoint              endpoint.Endpoint
 	GetByIDRequestTypeEndpoint             endpoint.Endpoint
+	GetDocumentTypeEndpoint                endpoint.Endpoint
+	AddDocumentTypeEndpoint                endpoint.Endpoint
+	DeleteDocumentTypeEndpoint             endpoint.Endpoint
+	GetByIDDocumentTypeEndpoint            endpoint.Endpoint
 }
 
 // New returns a Endpoints struct that wraps the provided service, and wires in all of the
@@ -62,6 +67,7 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		AddContractTypeEndpoint:                MakeAddContractTypeEndpoint(s),
 		AddConventionEndpoint:                  MakeAddConventionEndpoint(s),
 		AddDepartmentEndpoint:                  MakeAddDepartmentEndpoint(s),
+		AddDocumentTypeEndpoint:                MakeAddDocumentTypeEndpoint(s),
 		AddEmployeeRoleEndpoint:                MakeAddEmployeeRoleEndpoint(s),
 		AddEndpoint:                            MakeAddEndpoint(s),
 		AddEventEndpoint:                       MakeAddEventEndpoint(s),
@@ -71,6 +77,7 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		DeleteContractTypeEndpoint:             MakeDeleteContractTypeEndpoint(s),
 		DeleteConventionEndpoint:               MakeDeleteConventionEndpoint(s),
 		DeleteDepartmentEndpoint:               MakeDeleteDepartmentEndpoint(s),
+		DeleteDocumentTypeEndpoint:             MakeDeleteDocumentTypeEndpoint(s),
 		DeleteEmployeeRoleEndpoint:             MakeDeleteEmployeeRoleEndpoint(s),
 		DeleteEndpoint:                         MakeDeleteEndpoint(s),
 		DeleteEventEndpoint:                    MakeDeleteEventEndpoint(s),
@@ -83,6 +90,7 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		GetByIDContractTypeEndpoint:            MakeGetByIDContractTypeEndpoint(s),
 		GetByIDConventionEndpoint:              MakeGetByIDConventionEndpoint(s),
 		GetByIDDepartmentEndpoint:              MakeGetByIDDepartmentEndpoint(s),
+		GetByIDDocumentTypeEndpoint:            MakeGetByIDDocumentTypeEndpoint(s),
 		GetByIDEmployeeRoleEndpoint:            MakeGetByIDEmployeeRoleEndpoint(s),
 		GetByIDEndpoint:                        MakeGetByIDEndpoint(s),
 		GetByIDEventEndpoint:                   MakeGetByIDEventEndpoint(s),
@@ -93,6 +101,7 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		GetConventionByMultiCriteriaEndpoint:   MakeGetConventionByMultiCriteriaEndpoint(s),
 		GetConventionEndpoint:                  MakeGetConventionEndpoint(s),
 		GetDepartmentEndpoint:                  MakeGetDepartmentEndpoint(s),
+		GetDocumentTypeEndpoint:                MakeGetDocumentTypeEndpoint(s),
 		GetEmployeeRoleEndpoint:                MakeGetEmployeeRoleEndpoint(s),
 		GetEndpoint:                            MakeGetEndpoint(s),
 		GetEventByMultiCriteriaEndpoint:        MakeGetEventByMultiCriteriaEndpoint(s),
@@ -100,6 +109,7 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		GetLeaveRequestByMultiCriteriaEndpoint: MakeGetLeaveRequestByMultiCriteriaEndpoint(s),
 		GetLeaveRequestEndpoint:                MakeGetLeaveRequestEndpoint(s),
 		GetRequestTypeEndpoint:                 MakeGetRequestTypeEndpoint(s),
+		UpdateEndpoint:                         MakeUpdateEndpoint(s),
 	}
 	for _, m := range mdw["Get"] {
 		eps.GetEndpoint = m(eps.GetEndpoint)
@@ -109,6 +119,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["Delete"] {
 		eps.DeleteEndpoint = m(eps.DeleteEndpoint)
+	}
+	for _, m := range mdw["Update"] {
+		eps.UpdateEndpoint = m(eps.UpdateEndpoint)
 	}
 	for _, m := range mdw["GetByID"] {
 		eps.GetByIDEndpoint = m(eps.GetByIDEndpoint)
@@ -226,6 +239,18 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["GetByIDRequestType"] {
 		eps.GetByIDRequestTypeEndpoint = m(eps.GetByIDRequestTypeEndpoint)
+	}
+	for _, m := range mdw["GetDocumentType"] {
+		eps.GetDocumentTypeEndpoint = m(eps.GetDocumentTypeEndpoint)
+	}
+	for _, m := range mdw["AddDocumentType"] {
+		eps.AddDocumentTypeEndpoint = m(eps.AddDocumentTypeEndpoint)
+	}
+	for _, m := range mdw["DeleteDocumentType"] {
+		eps.DeleteDocumentTypeEndpoint = m(eps.DeleteDocumentTypeEndpoint)
+	}
+	for _, m := range mdw["GetByIDDocumentType"] {
+		eps.GetByIDDocumentTypeEndpoint = m(eps.GetByIDDocumentTypeEndpoint)
 	}
 	return eps
 }

@@ -4,10 +4,13 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	http1 "net/http"
 	endpoint "onServicemgo/rh/pkg/endpoint"
 	"onServicemgo/rh/pkg/io"
 	"strconv"
+
+	"gopkg.in/mgo.v2/bson"
 
 	http "github.com/go-kit/kit/transport/http"
 	handlers "github.com/gorilla/handlers"
@@ -56,27 +59,9 @@ func makeAddHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.
 // decodeAddRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	zip, _ := strconv.Atoi(r.FormValue("ZipCode"))
-	tel, _ := strconv.Atoi(r.FormValue("EmployeeNumTel"))
-	EmergencyTel, _ := strconv.Atoi(r.FormValue("EmergencyContactTel"))
-	salary, _ := strconv.ParseFloat(r.FormValue("EmployeeSalary"), 32)
-	iban, _ := strconv.Atoi(r.FormValue("EmployeeIban"))
-	bic, _ := strconv.Atoi(r.FormValue("EmployeeBic"))
-	req := endpoint.AddRequest{
-		io.Employee{
-			EmployeeName:         r.FormValue("EmployeeName"),
-			EmployeeEmail:        r.FormValue("EmployeeEmail"),
-			Address:              r.FormValue("Address"),
-			ZipCode:              zip,
-			EmployeeBirthDate:    r.FormValue("EmployeeBirthDate"),
-			EmployeeNumTel:       tel,
-			EmergencyContactName: r.FormValue("EmergencyContactName"),
-			EmergencyContactTel:  EmergencyTel,
-			EmployeeStartDate:    r.FormValue("EmployeeStartDate"),
-			EmployeeSalary:       salary,
-			EmployeeIban:         iban,
-			EmployeeBic:          bic,
-		},
+	var req endpoint.AddRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.Employee); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -1443,6 +1428,177 @@ func decodeGetByIDRequestTypeRequest(_ context.Context, r *http1.Request) (inter
 // encodeGetByIDRequestTypeResponse is a transport/http.EncodeResponseFunc that encodes
 // the response as JSON to the response writer
 func encodeGetByIDRequestTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeGetDocumentTypeHandler creates the handler logic
+func makeGetDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("GET").Path("/document_types/").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"GET"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.GetDocumentTypeEndpoint, decodeGetDocumentTypeRequest, encodeGetDocumentTypeResponse, options...)))
+}
+
+// decodeGetDocumentTypeRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeGetDocumentTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	req := endpoint.GetDocumentTypeRequest{}
+	return req, nil
+}
+
+// encodeGetDocumentTypeResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeGetDocumentTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeAddDocumentTypeHandler creates the handler logic
+func makeAddDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("POST").Path("/document_types/").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"POST"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.AddDocumentTypeEndpoint, decodeAddDocumentTypeRequest, encodeAddDocumentTypeResponse, options...)))
+}
+
+// decodeAddDocumentTypeRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeAddDocumentTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	req := endpoint.AddDocumentTypeRequest{
+		io.DocumentType{
+			Type: r.FormValue("Type"),
+		},
+	}
+	return req, nil
+}
+
+// encodeAddDocumentTypeResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeAddDocumentTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeDeleteDocumentTypeHandler creates the handler logic
+func makeDeleteDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("DELETE", "OPTIONS").Path("/document_types/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"DELETE"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.DeleteDocumentTypeEndpoint, decodeDeleteDocumentTypeRequest, encodeDeleteDocumentTypeResponse, options...)))
+}
+
+// decodeDeleteDocumentTypeRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeDeleteDocumentTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.DeleteDocumentTypeRequest{
+		Id: id,
+	}
+	return req, nil
+}
+
+// encodeDeleteDocumentTypeResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeDeleteDocumentTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeGetByIDDocumentTypeHandler creates the handler logic
+func makeGetByIDDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("GET").Path("/document_types/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"GET"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.GetByIDDocumentTypeEndpoint, decodeGetByIDDocumentTypeRequest, encodeGetByIDDocumentTypeResponse, options...)))
+}
+
+// decodeGetByIDDocumentTypeRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeGetByIDDocumentTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.GetByIDDocumentTypeRequest{
+		Id: id,
+	}
+	return req, nil
+}
+
+// encodeGetByIDDocumentTypeResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeGetByIDDocumentTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeUpdateHandler creates the handler logic
+func makeUpdateHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/employees/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"PUT"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.UpdateEndpoint, decodeUpdateRequest, encodeUpdateResponse, options...)))
+}
+
+// decodeUpdateRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	fmt.Println("docs ids:", r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateRequest{
+		io.Employee{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.Employee); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
