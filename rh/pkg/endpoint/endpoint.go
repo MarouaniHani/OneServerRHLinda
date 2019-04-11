@@ -1730,3 +1730,345 @@ func (en Endpoints) Update(ctx context.Context, employee io.Employee) (e io.Empl
 	}
 	return response.(UpdateResponse).E, response.(UpdateResponse).Error
 }
+
+// UpdateDepartmentRequest collects the request parameters for the UpdateDepartment method.
+type UpdateDepartmentRequest struct {
+	Depatment io.Department `json:"depatment"`
+}
+
+// UpdateDepartmentResponse collects the response parameters for the UpdateDepartment method.
+type UpdateDepartmentResponse struct {
+	D     io.Department `json:"d"`
+	Error error         `json:"error"`
+}
+
+// MakeUpdateDepartmentEndpoint returns an endpoint that invokes UpdateDepartment on the service.
+func MakeUpdateDepartmentEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateDepartmentRequest)
+		d, error := s.UpdateDepartment(ctx, req.Depatment)
+		return UpdateDepartmentResponse{
+			D:     d,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateDepartmentResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateEventRequest collects the request parameters for the UpdateEvent method.
+type UpdateEventRequest struct {
+	Event io.Event `json:"event"`
+}
+
+// UpdateEventResponse collects the response parameters for the UpdateEvent method.
+type UpdateEventResponse struct {
+	E     io.Event `json:"e"`
+	Error error    `json:"error"`
+}
+
+// MakeUpdateEventEndpoint returns an endpoint that invokes UpdateEvent on the service.
+func MakeUpdateEventEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateEventRequest)
+		e, error := s.UpdateEvent(ctx, req.Event)
+		return UpdateEventResponse{
+			E:     e,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateEventResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateAdminRequestRequest collects the request parameters for the UpdateAdminRequest method.
+type UpdateAdminRequestRequest struct {
+	AdminRequest io.AdminRequest `json:"admin_request"`
+}
+
+// UpdateAdminRequestResponse collects the response parameters for the UpdateAdminRequest method.
+type UpdateAdminRequestResponse struct {
+	A     io.AdminRequest `json:"a"`
+	Error error           `json:"error"`
+}
+
+// MakeUpdateAdminRequestEndpoint returns an endpoint that invokes UpdateAdminRequest on the service.
+func MakeUpdateAdminRequestEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateAdminRequestRequest)
+		a, error := s.UpdateAdminRequest(ctx, req.AdminRequest)
+		return UpdateAdminRequestResponse{
+			A:     a,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateAdminRequestResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateLeaveRequestRequest collects the request parameters for the UpdateLeaveRequest method.
+type UpdateLeaveRequestRequest struct {
+	LeaveRequest io.LeaveRequest `json:"leave_request"`
+}
+
+// UpdateLeaveRequestResponse collects the response parameters for the UpdateLeaveRequest method.
+type UpdateLeaveRequestResponse struct {
+	L     io.LeaveRequest `json:"l"`
+	Error error           `json:"error"`
+}
+
+// MakeUpdateLeaveRequestEndpoint returns an endpoint that invokes UpdateLeaveRequest on the service.
+func MakeUpdateLeaveRequestEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateLeaveRequestRequest)
+		l, error := s.UpdateLeaveRequest(ctx, req.LeaveRequest)
+		return UpdateLeaveRequestResponse{
+			Error: error,
+			L:     l,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateLeaveRequestResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateContractTypeRequest collects the request parameters for the UpdateContractType method.
+type UpdateContractTypeRequest struct {
+	ContractType io.ContractType `json:"contract_type"`
+}
+
+// UpdateContractTypeResponse collects the response parameters for the UpdateContractType method.
+type UpdateContractTypeResponse struct {
+	C     io.ContractType `json:"c"`
+	Error error           `json:"error"`
+}
+
+// MakeUpdateContractTypeEndpoint returns an endpoint that invokes UpdateContractType on the service.
+func MakeUpdateContractTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateContractTypeRequest)
+		c, error := s.UpdateContractType(ctx, req.ContractType)
+		return UpdateContractTypeResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateContractTypeResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateEmployeeRoleRequest collects the request parameters for the UpdateEmployeeRole method.
+type UpdateEmployeeRoleRequest struct {
+	EmployeeRole io.EmployeeRole `json:"employee_role"`
+}
+
+// UpdateEmployeeRoleResponse collects the response parameters for the UpdateEmployeeRole method.
+type UpdateEmployeeRoleResponse struct {
+	E     io.EmployeeRole `json:"e"`
+	Error error           `json:"error"`
+}
+
+// MakeUpdateEmployeeRoleEndpoint returns an endpoint that invokes UpdateEmployeeRole on the service.
+func MakeUpdateEmployeeRoleEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateEmployeeRoleRequest)
+		e, error := s.UpdateEmployeeRole(ctx, req.EmployeeRole)
+		return UpdateEmployeeRoleResponse{
+			E:     e,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateEmployeeRoleResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateRequestTypeRequest collects the request parameters for the UpdateRequestType method.
+type UpdateRequestTypeRequest struct {
+	RequestType io.RequestType `json:"request_type"`
+}
+
+// UpdateRequestTypeResponse collects the response parameters for the UpdateRequestType method.
+type UpdateRequestTypeResponse struct {
+	R     io.RequestType `json:"r"`
+	Error error          `json:"error"`
+}
+
+// MakeUpdateRequestTypeEndpoint returns an endpoint that invokes UpdateRequestType on the service.
+func MakeUpdateRequestTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateRequestTypeRequest)
+		r, error := s.UpdateRequestType(ctx, req.RequestType)
+		return UpdateRequestTypeResponse{
+			Error: error,
+			R:     r,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateRequestTypeResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateDocumentTypeRequest collects the request parameters for the UpdateDocumentType method.
+type UpdateDocumentTypeRequest struct {
+	DocumentType io.DocumentType `json:"document_type"`
+}
+
+// UpdateDocumentTypeResponse collects the response parameters for the UpdateDocumentType method.
+type UpdateDocumentTypeResponse struct {
+	D     io.DocumentType `json:"d"`
+	Error error           `json:"error"`
+}
+
+// MakeUpdateDocumentTypeEndpoint returns an endpoint that invokes UpdateDocumentType on the service.
+func MakeUpdateDocumentTypeEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateDocumentTypeRequest)
+		d, error := s.UpdateDocumentType(ctx, req.DocumentType)
+		return UpdateDocumentTypeResponse{
+			D:     d,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateDocumentTypeResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateDepartment implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateDepartment(ctx context.Context, depatment io.Department) (d io.Department, error error) {
+	request := UpdateDepartmentRequest{Depatment: depatment}
+	response, err := en.UpdateDepartmentEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateDepartmentResponse).D, response.(UpdateDepartmentResponse).Error
+}
+
+// UpdateEvent implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateEvent(ctx context.Context, event io.Event) (e io.Event, error error) {
+	request := UpdateEventRequest{Event: event}
+	response, err := en.UpdateEventEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateEventResponse).E, response.(UpdateEventResponse).Error
+}
+
+// UpdateAdminRequest implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateAdminRequest(ctx context.Context, adminRequest io.AdminRequest) (a io.AdminRequest, error error) {
+	request := UpdateAdminRequestRequest{AdminRequest: adminRequest}
+	response, err := en.UpdateAdminRequestEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateAdminRequestResponse).A, response.(UpdateAdminRequestResponse).Error
+}
+
+// UpdateLeaveRequest implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error) {
+	request := UpdateLeaveRequestRequest{LeaveRequest: leaveRequest}
+	response, err := en.UpdateLeaveRequestEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateLeaveRequestResponse).L, response.(UpdateLeaveRequestResponse).Error
+}
+
+// UpdateContractType implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateContractType(ctx context.Context, contractType io.ContractType) (c io.ContractType, error error) {
+	request := UpdateContractTypeRequest{ContractType: contractType}
+	response, err := en.UpdateContractTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateContractTypeResponse).C, response.(UpdateContractTypeResponse).Error
+}
+
+// UpdateEmployeeRole implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateEmployeeRole(ctx context.Context, employeeRole io.EmployeeRole) (e io.EmployeeRole, error error) {
+	request := UpdateEmployeeRoleRequest{EmployeeRole: employeeRole}
+	response, err := en.UpdateEmployeeRoleEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateEmployeeRoleResponse).E, response.(UpdateEmployeeRoleResponse).Error
+}
+
+// UpdateRequestType implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error) {
+	request := UpdateRequestTypeRequest{RequestType: requestType}
+	response, err := en.UpdateRequestTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateRequestTypeResponse).R, response.(UpdateRequestTypeResponse).Error
+}
+
+// UpdateDocumentType implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateDocumentType(ctx context.Context, documentType io.DocumentType) (d io.DocumentType, error error) {
+	request := UpdateDocumentTypeRequest{DocumentType: documentType}
+	response, err := en.UpdateDocumentTypeEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateDocumentTypeResponse).D, response.(UpdateDocumentTypeResponse).Error
+}
+
+// UpdateConventionRequest collects the request parameters for the UpdateConvention method.
+type UpdateConventionRequest struct {
+	Convention io.Convention `json:"convention"`
+}
+
+// UpdateConventionResponse collects the response parameters for the UpdateConvention method.
+type UpdateConventionResponse struct {
+	C     io.Convention `json:"c"`
+	Error error         `json:"error"`
+}
+
+// MakeUpdateConventionEndpoint returns an endpoint that invokes UpdateConvention on the service.
+func MakeUpdateConventionEndpoint(s service.RhService) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(UpdateConventionRequest)
+		c, error := s.UpdateConvention(ctx, req.Convention)
+		return UpdateConventionResponse{
+			C:     c,
+			Error: error,
+		}, nil
+	}
+}
+
+// Failed implements Failer.
+func (r UpdateConventionResponse) Failed() error {
+	return r.Error
+}
+
+// UpdateConvention implements Service. Primarily useful in a client.
+func (en Endpoints) UpdateConvention(ctx context.Context, convention io.Convention) (c io.Convention, error error) {
+	request := UpdateConventionRequest{Convention: convention}
+	response, err := en.UpdateConventionEndpoint(ctx, request)
+	if err != nil {
+		return
+	}
+	return response.(UpdateConventionResponse).C, response.(UpdateConventionResponse).Error
+}

@@ -20,42 +20,51 @@ type Endpoints struct {
 	GetDepartmentEndpoint                  endpoint.Endpoint
 	AddDepartmentEndpoint                  endpoint.Endpoint
 	DeleteDepartmentEndpoint               endpoint.Endpoint
+	UpdateDepartmentEndpoint               endpoint.Endpoint
 	GetByIDDepartmentEndpoint              endpoint.Endpoint
 	GetEventEndpoint                       endpoint.Endpoint
 	AddEventEndpoint                       endpoint.Endpoint
 	DeleteEventEndpoint                    endpoint.Endpoint
+	UpdateEventEndpoint                    endpoint.Endpoint
 	GetByIDEventEndpoint                   endpoint.Endpoint
 	GetEventByMultiCriteriaEndpoint        endpoint.Endpoint
 	GetAdminRequestEndpoint                endpoint.Endpoint
 	AddAdminRequestEndpoint                endpoint.Endpoint
 	DeleteAdminRequestEndpoint             endpoint.Endpoint
+	UpdateAdminRequestEndpoint             endpoint.Endpoint
 	GetByIDAdminRequestEndpoint            endpoint.Endpoint
 	GetAdminRequestByMultiCriteriaEndpoint endpoint.Endpoint
 	GetLeaveRequestEndpoint                endpoint.Endpoint
 	AddLeaveRequestEndpoint                endpoint.Endpoint
 	DeleteLeaveRequestEndpoint             endpoint.Endpoint
+	UpdateLeaveRequestEndpoint             endpoint.Endpoint
 	GetByIDLeaveRequestEndpoint            endpoint.Endpoint
 	GetLeaveRequestByMultiCriteriaEndpoint endpoint.Endpoint
 	GetConventionEndpoint                  endpoint.Endpoint
 	AddConventionEndpoint                  endpoint.Endpoint
 	DeleteConventionEndpoint               endpoint.Endpoint
+	UpdateConventionEndpoint               endpoint.Endpoint
 	GetByIDConventionEndpoint              endpoint.Endpoint
 	GetConventionByMultiCriteriaEndpoint   endpoint.Endpoint
 	GetContractTypeEndpoint                endpoint.Endpoint
 	AddContractTypeEndpoint                endpoint.Endpoint
 	DeleteContractTypeEndpoint             endpoint.Endpoint
+	UpdateContractTypeEndpoint             endpoint.Endpoint
 	GetByIDContractTypeEndpoint            endpoint.Endpoint
 	GetEmployeeRoleEndpoint                endpoint.Endpoint
 	AddEmployeeRoleEndpoint                endpoint.Endpoint
 	DeleteEmployeeRoleEndpoint             endpoint.Endpoint
+	UpdateEmployeeRoleEndpoint             endpoint.Endpoint
 	GetByIDEmployeeRoleEndpoint            endpoint.Endpoint
 	GetRequestTypeEndpoint                 endpoint.Endpoint
 	AddRequestTypeEndpoint                 endpoint.Endpoint
 	DeleteRequestTypeEndpoint              endpoint.Endpoint
+	UpdateRequestTypeEndpoint              endpoint.Endpoint
 	GetByIDRequestTypeEndpoint             endpoint.Endpoint
 	GetDocumentTypeEndpoint                endpoint.Endpoint
 	AddDocumentTypeEndpoint                endpoint.Endpoint
 	DeleteDocumentTypeEndpoint             endpoint.Endpoint
+	UpdateDocumentTypeEndpoint             endpoint.Endpoint
 	GetByIDDocumentTypeEndpoint            endpoint.Endpoint
 }
 
@@ -109,7 +118,16 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 		GetLeaveRequestByMultiCriteriaEndpoint: MakeGetLeaveRequestByMultiCriteriaEndpoint(s),
 		GetLeaveRequestEndpoint:                MakeGetLeaveRequestEndpoint(s),
 		GetRequestTypeEndpoint:                 MakeGetRequestTypeEndpoint(s),
+		UpdateAdminRequestEndpoint:             MakeUpdateAdminRequestEndpoint(s),
+		UpdateContractTypeEndpoint:             MakeUpdateContractTypeEndpoint(s),
+		UpdateConventionEndpoint:               MakeUpdateConventionEndpoint(s),
+		UpdateDepartmentEndpoint:               MakeUpdateDepartmentEndpoint(s),
+		UpdateDocumentTypeEndpoint:             MakeUpdateDocumentTypeEndpoint(s),
+		UpdateEmployeeRoleEndpoint:             MakeUpdateEmployeeRoleEndpoint(s),
 		UpdateEndpoint:                         MakeUpdateEndpoint(s),
+		UpdateEventEndpoint:                    MakeUpdateEventEndpoint(s),
+		UpdateLeaveRequestEndpoint:             MakeUpdateLeaveRequestEndpoint(s),
+		UpdateRequestTypeEndpoint:              MakeUpdateRequestTypeEndpoint(s),
 	}
 	for _, m := range mdw["Get"] {
 		eps.GetEndpoint = m(eps.GetEndpoint)
@@ -141,6 +159,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	for _, m := range mdw["DeleteDepartment"] {
 		eps.DeleteDepartmentEndpoint = m(eps.DeleteDepartmentEndpoint)
 	}
+	for _, m := range mdw["UpdateDepartment"] {
+		eps.UpdateDepartmentEndpoint = m(eps.UpdateDepartmentEndpoint)
+	}
 	for _, m := range mdw["GetByIDDepartment"] {
 		eps.GetByIDDepartmentEndpoint = m(eps.GetByIDDepartmentEndpoint)
 	}
@@ -152,6 +173,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["DeleteEvent"] {
 		eps.DeleteEventEndpoint = m(eps.DeleteEventEndpoint)
+	}
+	for _, m := range mdw["UpdateEvent"] {
+		eps.UpdateEventEndpoint = m(eps.UpdateEventEndpoint)
 	}
 	for _, m := range mdw["GetByIDEvent"] {
 		eps.GetByIDEventEndpoint = m(eps.GetByIDEventEndpoint)
@@ -168,6 +192,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	for _, m := range mdw["DeleteAdminRequest"] {
 		eps.DeleteAdminRequestEndpoint = m(eps.DeleteAdminRequestEndpoint)
 	}
+	for _, m := range mdw["UpdateAdminRequest"] {
+		eps.UpdateAdminRequestEndpoint = m(eps.UpdateAdminRequestEndpoint)
+	}
 	for _, m := range mdw["GetByIDAdminRequest"] {
 		eps.GetByIDAdminRequestEndpoint = m(eps.GetByIDAdminRequestEndpoint)
 	}
@@ -182,6 +209,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["DeleteLeaveRequest"] {
 		eps.DeleteLeaveRequestEndpoint = m(eps.DeleteLeaveRequestEndpoint)
+	}
+	for _, m := range mdw["UpdateLeaveRequest"] {
+		eps.UpdateLeaveRequestEndpoint = m(eps.UpdateLeaveRequestEndpoint)
 	}
 	for _, m := range mdw["GetByIDLeaveRequest"] {
 		eps.GetByIDLeaveRequestEndpoint = m(eps.GetByIDLeaveRequestEndpoint)
@@ -198,6 +228,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	for _, m := range mdw["DeleteConvention"] {
 		eps.DeleteConventionEndpoint = m(eps.DeleteConventionEndpoint)
 	}
+	for _, m := range mdw["UpdateConvention"] {
+		eps.UpdateConventionEndpoint = m(eps.UpdateConventionEndpoint)
+	}
 	for _, m := range mdw["GetByIDConvention"] {
 		eps.GetByIDConventionEndpoint = m(eps.GetByIDConventionEndpoint)
 	}
@@ -213,6 +246,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	for _, m := range mdw["DeleteContractType"] {
 		eps.DeleteContractTypeEndpoint = m(eps.DeleteContractTypeEndpoint)
 	}
+	for _, m := range mdw["UpdateContractType"] {
+		eps.UpdateContractTypeEndpoint = m(eps.UpdateContractTypeEndpoint)
+	}
 	for _, m := range mdw["GetByIDContractType"] {
 		eps.GetByIDContractTypeEndpoint = m(eps.GetByIDContractTypeEndpoint)
 	}
@@ -224,6 +260,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["DeleteEmployeeRole"] {
 		eps.DeleteEmployeeRoleEndpoint = m(eps.DeleteEmployeeRoleEndpoint)
+	}
+	for _, m := range mdw["UpdateEmployeeRole"] {
+		eps.UpdateEmployeeRoleEndpoint = m(eps.UpdateEmployeeRoleEndpoint)
 	}
 	for _, m := range mdw["GetByIDEmployeeRole"] {
 		eps.GetByIDEmployeeRoleEndpoint = m(eps.GetByIDEmployeeRoleEndpoint)
@@ -237,6 +276,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	for _, m := range mdw["DeleteRequestType"] {
 		eps.DeleteRequestTypeEndpoint = m(eps.DeleteRequestTypeEndpoint)
 	}
+	for _, m := range mdw["UpdateRequestType"] {
+		eps.UpdateRequestTypeEndpoint = m(eps.UpdateRequestTypeEndpoint)
+	}
 	for _, m := range mdw["GetByIDRequestType"] {
 		eps.GetByIDRequestTypeEndpoint = m(eps.GetByIDRequestTypeEndpoint)
 	}
@@ -248,6 +290,9 @@ func New(s service.RhService, mdw map[string][]endpoint.Middleware) Endpoints {
 	}
 	for _, m := range mdw["DeleteDocumentType"] {
 		eps.DeleteDocumentTypeEndpoint = m(eps.DeleteDocumentTypeEndpoint)
+	}
+	for _, m := range mdw["UpdateDocumentType"] {
+		eps.UpdateDocumentTypeEndpoint = m(eps.UpdateDocumentTypeEndpoint)
 	}
 	for _, m := range mdw["GetByIDDocumentType"] {
 		eps.GetByIDDocumentTypeEndpoint = m(eps.GetByIDDocumentTypeEndpoint)

@@ -8,7 +8,6 @@ import (
 	http1 "net/http"
 	endpoint "onServicemgo/rh/pkg/endpoint"
 	"onServicemgo/rh/pkg/io"
-	"strconv"
 
 	"gopkg.in/mgo.v2/bson"
 
@@ -105,6 +104,47 @@ func decodeDeleteRequest(_ context.Context, r *http1.Request) (interface{}, erro
 // encodeDeleteResponse is a transport/http.EncodeResponseFunc that encodes
 // the response as JSON to the response writer
 func encodeDeleteResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
+// makeUpdateHandler creates the handler logic
+func makeUpdateHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/employees/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"PUT"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.UpdateEndpoint, decodeUpdateRequest, encodeUpdateResponse, options...)))
+}
+
+// decodeUpdateRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	fmt.Println("docs ids:", r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateRequest{
+		io.Employee{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.Employee); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil
@@ -283,10 +323,9 @@ func makeAddDepartmentHandler(m *mux.Router, endpoints endpoint.Endpoints, optio
 // decodeAddDepartmentRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddDepartmentRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddDepartmentRequest{
-		io.Department{
-			DepartmentName: r.FormValue("DepartmentName"),
-		},
+	var req endpoint.AddDepartmentRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.Department); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -375,6 +414,42 @@ func encodeGetByIDDepartmentResponse(ctx context.Context, w http1.ResponseWriter
 	return
 }
 
+// makeUpdateDepartmentHandler creates the handler logic
+func makeUpdateDepartmentHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/departments/{id}").Handler(handlers.CORS(handlers.AllowedMethods([]string{"PUT"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.UpdateDepartmentEndpoint, decodeUpdateDepartmentRequest, encodeUpdateDepartmentResponse, options...)))
+}
+
+// decodeUpdateDepartmentRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateDepartmentRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateDepartmentRequest{
+		io.Department{
+			ID: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.Depatment); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateDepartmentResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateDepartmentResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetEventHandler creates the handler logic
 func makeGetEventHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/events/").Handler(
@@ -416,12 +491,9 @@ func makeAddEventHandler(m *mux.Router, endpoints endpoint.Endpoints, options []
 // decodeAddEventRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddEventRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddEventRequest{
-		io.Event{
-			EventName:        r.FormValue("EventName"),
-			EventDescription: r.FormValue("EventDescription"),
-			EventStartDate:   r.FormValue("EventStartDate"),
-		},
+	var req endpoint.AddEventRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.Event); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -539,6 +611,42 @@ func encodeGetEventByMultiCriteriaResponse(ctx context.Context, w http1.Response
 	return
 }
 
+// makeUpdateEventHandler creates the handler logic
+func makeUpdateEventHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/events/{id}").Handler(handlers.CORS(handlers.AllowedMethods([]string{"PUT"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.UpdateEventEndpoint, decodeUpdateEventRequest, encodeUpdateEventResponse, options...)))
+}
+
+// decodeUpdateEventRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateEventRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateEventRequest{
+		io.Event{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.Event); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateEventResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateEventResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetAdminRequestHandler creates the handler logic
 func makeGetAdminRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/admin_request/").Handler(
@@ -580,15 +688,9 @@ func makeAddAdminRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, opt
 // decodeAddAdminRequestRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddAdminRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	numberofpaper, _ := strconv.Atoi(r.FormValue("NumberOfPaper"))
-	requeststatus, _ := strconv.ParseBool(r.FormValue("RequestStatus"))
-	req := endpoint.AddAdminRequestRequest{
-		io.AdminRequest{
-			NumberOfPaper:   numberofpaper,
-			ApplicationDate: r.FormValue("ApplicationDate"),
-			RequestReason:   r.FormValue("RequestReason"),
-			RequestStatus:   requeststatus,
-		},
+	var req endpoint.AddAdminRequestRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.AdminRequest); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -708,6 +810,42 @@ func encodeGetAdminRequestByMultiCriteriaResponse(ctx context.Context, w http1.R
 	return
 }
 
+// makeUpdateAdminRequestHandler creates the handler logic
+func makeUpdateAdminRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/admin_request/{id}").Handler(handlers.CORS(handlers.AllowedMethods([]string{"PUT"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.UpdateAdminRequestEndpoint, decodeUpdateAdminRequestRequest, encodeUpdateAdminRequestResponse, options...)))
+}
+
+// decodeUpdateAdminRequestRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateAdminRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateAdminRequestRequest{
+		io.AdminRequest{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.AdminRequest); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateAdminRequestResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateAdminRequestResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetLeaveRequestHandler creates the handler logic
 func makeGetLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/leave_request/").Handler(
@@ -750,15 +888,9 @@ func makeAddLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, opt
 // decodeAddLeaveRequestRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddLeaveRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	leaveRequeststatus, _ := strconv.ParseBool(r.FormValue("RequestStatus"))
-	req := endpoint.AddLeaveRequestRequest{
-		io.LeaveRequest{
-			ApplicationDate: r.FormValue("ApplicationDate"),
-			LeaveStartDate:  r.FormValue("LeaveStartDate"),
-			LeaveEndDate:    r.FormValue("LeaveEndDate"),
-			LeaveReason:     r.FormValue("LeaveReason"),
-			RequestStatus:   leaveRequeststatus,
-		},
+	var req endpoint.AddLeaveRequestRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.LeaveRequest); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -876,6 +1008,46 @@ func encodeGetLeaveRequestByMultiCriteriaResponse(ctx context.Context, w http1.R
 	return
 }
 
+// makeUpdateLeaveRequestHandler creates the handler logic
+func makeUpdateLeaveRequestHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/leave_request/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"PUT"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.UpdateLeaveRequestEndpoint, decodeUpdateLeaveRequestRequest, encodeUpdateLeaveRequestResponse, options...)))
+}
+
+// decodeUpdateLeaveRequestRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateLeaveRequestRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateLeaveRequestRequest{
+		io.LeaveRequest{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.LeaveRequest); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateLeaveRequestResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateLeaveRequestResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetConventionHandler creates the handler logic
 func makeGetConventionHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/conventions/").Handler(
@@ -918,11 +1090,9 @@ func makeAddConventionHandler(m *mux.Router, endpoints endpoint.Endpoints, optio
 // decodeAddConventionRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddConventionRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddConventionRequest{
-		io.Convention{
-			ConventionName:        r.FormValue("ConventionName"),
-			ConventionDescription: r.FormValue("ConventionDescription"),
-		},
+	var req endpoint.AddConventionRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.Convention); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -1042,6 +1212,46 @@ func encodeGetConventionByMultiCriteriaResponse(ctx context.Context, w http1.Res
 	return
 }
 
+// makeUpdateConventionHandler creates the handler logic
+func makeUpdateConventionHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/conventions/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"PUT"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.UpdateConventionEndpoint, decodeUpdateConventionRequest, encodeUpdateConventionResponse, options...)))
+}
+
+// decodeUpdateConventionRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateConventionRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateConventionRequest{
+		io.Convention{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.Convention); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateConventionResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateConventionResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetContractTypeHandler creates the handler logic
 func makeGetContractTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/contract_type/").Handler(
@@ -1084,10 +1294,9 @@ func makeAddContractTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, opt
 // decodeAddContractTypeRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddContractTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddContractTypeRequest{
-		io.ContractType{
-			ContractType: r.FormValue("ContractType"),
-		},
+	var req endpoint.AddContractTypeRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.ContractType); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -1176,6 +1385,42 @@ func encodeGetByIDContractTypeResponse(ctx context.Context, w http1.ResponseWrit
 	return
 }
 
+// makeUpdateContractTypeHandler creates the handler logic
+func makeUpdateContractTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/contract_type/{id}").Handler(handlers.CORS(handlers.AllowedMethods([]string{"PUT"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.UpdateContractTypeEndpoint, decodeUpdateContractTypeRequest, encodeUpdateContractTypeResponse, options...)))
+}
+
+// decodeUpdateContractTypeRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateContractTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateContractTypeRequest{
+		io.ContractType{
+			Id: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.ContractType); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateContractTypeResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateContractTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetEmployeeRoleHandler creates the handler logic
 func makeGetEmployeeRoleHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/employee_role/").Handler(
@@ -1215,10 +1460,9 @@ func makeAddEmployeeRoleHandler(m *mux.Router, endpoints endpoint.Endpoints, opt
 // decodeAddEmployeeRoleRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddEmployeeRoleRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddEmployeeRoleRequest{
-		io.EmployeeRole{
-			Role: r.FormValue("Role"),
-		},
+	var req endpoint.AddEmployeeRoleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.EmployeeRole); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -1305,6 +1549,42 @@ func encodeGetByIDEmployeeRoleResponse(ctx context.Context, w http1.ResponseWrit
 	return
 }
 
+// makeUpdateEmployeeRoleHandler creates the handler logic
+func makeUpdateEmployeeRoleHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/employee_role/{id}").Handler(handlers.CORS(handlers.AllowedMethods([]string{"PUT"}), handlers.AllowedOrigins([]string{"*"}))(http.NewServer(endpoints.UpdateEmployeeRoleEndpoint, decodeUpdateEmployeeRoleRequest, encodeUpdateEmployeeRoleResponse, options...)))
+}
+
+// decodeUpdateEmployeeRoleRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateEmployeeRoleRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateEmployeeRoleRequest{
+		io.EmployeeRole{
+			ID: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.EmployeeRole); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateEmployeeRoleResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateEmployeeRoleResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetRequestTypeHandler creates the handler logic
 func makeGetRequestTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/request_type/").Handler(
@@ -1345,11 +1625,9 @@ func makeAddRequestTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, opti
 // decodeAddRequestTypeRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddRequestTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddRequestTypeRequest{
-		io.RequestType{
-			RequestName:     r.FormValue("RequestName"),
-			RequestCategory: r.FormValue("RequestCategory"),
-		},
+	var req endpoint.AddRequestTypeRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.RequestType); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -1437,6 +1715,46 @@ func encodeGetByIDRequestTypeResponse(ctx context.Context, w http1.ResponseWrite
 	return
 }
 
+// makeUpdateRequestTypeHandler creates the handler logic
+func makeUpdateRequestTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/request_type/{id}").Handler(
+		handlers.CORS(
+			handlers.AllowedMethods([]string{"PUT"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)(http.NewServer(endpoints.UpdateRequestTypeEndpoint, decodeUpdateRequestTypeRequest, encodeUpdateRequestTypeResponse, options...)))
+}
+
+// decodeUpdateRequestTypeRequest is a transport/http.DecodeRequestFunc that decodes a
+// JSON-encoded request from the HTTP request body.
+func decodeUpdateRequestTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+	id, ok := vars["id"]
+	if !ok {
+		return nil, errors.New("not a valid ID")
+	}
+	req := endpoint.UpdateRequestTypeRequest{
+		io.RequestType{
+			ID: bson.ObjectIdHex(id),
+		},
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req.RequestType); err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
+// encodeUpdateRequestTypeResponse is a transport/http.EncodeResponseFunc that encodes
+// the response as JSON to the response writer
+func encodeUpdateRequestTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
+		ErrorEncoder(ctx, f.Failed(), w)
+		return nil
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	err = json.NewEncoder(w).Encode(response)
+	return
+}
+
 // makeGetDocumentTypeHandler creates the handler logic
 func makeGetDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
 	m.Methods("GET").Path("/document_types/").Handler(
@@ -1477,10 +1795,9 @@ func makeAddDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, opt
 // decodeAddDocumentTypeRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
 func decodeAddDocumentTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
-	req := endpoint.AddDocumentTypeRequest{
-		io.DocumentType{
-			Type: r.FormValue("Type"),
-		},
+	var req endpoint.AddDocumentTypeRequest
+	if err := json.NewDecoder(r.Body).Decode(&req.DocumentType); err != nil {
+		return nil, err
 	}
 	return req, nil
 }
@@ -1567,38 +1884,37 @@ func encodeGetByIDDocumentTypeResponse(ctx context.Context, w http1.ResponseWrit
 	return
 }
 
-// makeUpdateHandler creates the handler logic
-func makeUpdateHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
-	m.Methods("PUT").Path("/employees/{id}").Handler(
+// makeUpdateDocumentTypeHandler creates the handler logic
+func makeUpdateDocumentTypeHandler(m *mux.Router, endpoints endpoint.Endpoints, options []http.ServerOption) {
+	m.Methods("PUT").Path("/document_types/{id}").Handler(
 		handlers.CORS(
 			handlers.AllowedMethods([]string{"PUT"}),
 			handlers.AllowedOrigins([]string{"*"}),
-		)(http.NewServer(endpoints.UpdateEndpoint, decodeUpdateRequest, encodeUpdateResponse, options...)))
+		)(http.NewServer(endpoints.UpdateDocumentTypeEndpoint, decodeUpdateDocumentTypeRequest, encodeUpdateDocumentTypeResponse, options...)))
 }
 
-// decodeUpdateRequest is a transport/http.DecodeRequestFunc that decodes a
+// decodeUpdateDocumentTypeRequest is a transport/http.DecodeRequestFunc that decodes a
 // JSON-encoded request from the HTTP request body.
-func decodeUpdateRequest(_ context.Context, r *http1.Request) (interface{}, error) {
+func decodeUpdateDocumentTypeRequest(_ context.Context, r *http1.Request) (interface{}, error) {
 	vars := mux.Vars(r)
-	fmt.Println("docs ids:", r)
 	id, ok := vars["id"]
 	if !ok {
 		return nil, errors.New("not a valid ID")
 	}
-	req := endpoint.UpdateRequest{
-		io.Employee{
-			Id: bson.ObjectIdHex(id),
+	req := endpoint.UpdateDocumentTypeRequest{
+		io.DocumentType{
+			ID: bson.ObjectIdHex(id),
 		},
 	}
-	if err := json.NewDecoder(r.Body).Decode(&req.Employee); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&req.DocumentType); err != nil {
 		return nil, err
 	}
 	return req, nil
 }
 
-// encodeUpdateResponse is a transport/http.EncodeResponseFunc that encodes
+// encodeUpdateDocumentTypeResponse is a transport/http.EncodeResponseFunc that encodes
 // the response as JSON to the response writer
-func encodeUpdateResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
+func encodeUpdateDocumentTypeResponse(ctx context.Context, w http1.ResponseWriter, response interface{}) (err error) {
 	if f, ok := response.(endpoint.Failure); ok && f.Failed() != nil {
 		ErrorEncoder(ctx, f.Failed(), w)
 		return nil

@@ -317,3 +317,59 @@ func (lo loggingMiddleware) Update(ctx context.Context, employee io.Employee) (e
 	}()
 	return lo.next.Update(ctx, employee)
 }
+
+func (lo loggingMiddleware) UpdateDepartment(ctx context.Context, depatment io.Department) (d io.Department, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateDepartment", "depatment", depatment, "d", d, "error", error)
+	}()
+	return lo.next.UpdateDepartment(ctx, depatment)
+}
+func (lo loggingMiddleware) UpdateEvent(ctx context.Context, event io.Event) (e io.Event, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateEvent", "event", event, "e", e, "error", error)
+	}()
+	return lo.next.UpdateEvent(ctx, event)
+}
+func (lo loggingMiddleware) UpdateAdminRequest(ctx context.Context, adminRequest io.AdminRequest) (a io.AdminRequest, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateAdminRequest", "adminRequest", adminRequest, "a", a, "error", error)
+	}()
+	return lo.next.UpdateAdminRequest(ctx, adminRequest)
+}
+func (lo loggingMiddleware) UpdateLeaveRequest(ctx context.Context, leaveRequest io.LeaveRequest) (l io.LeaveRequest, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateLeaveRequest", "leaveRequest", leaveRequest, "l", l, "error", error)
+	}()
+	return lo.next.UpdateLeaveRequest(ctx, leaveRequest)
+}
+func (lo loggingMiddleware) UpdateContractType(ctx context.Context, contractType io.ContractType) (c io.ContractType, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateContractType", "contractType", contractType, "c", c, "error", error)
+	}()
+	return lo.next.UpdateContractType(ctx, contractType)
+}
+func (lo loggingMiddleware) UpdateEmployeeRole(ctx context.Context, employeeRole io.EmployeeRole) (e io.EmployeeRole, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateEmployeeRole", "employeeRole", employeeRole, "e", e, "error", error)
+	}()
+	return lo.next.UpdateEmployeeRole(ctx, employeeRole)
+}
+func (lo loggingMiddleware) UpdateRequestType(ctx context.Context, requestType io.RequestType) (r io.RequestType, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateRequestType", "requestType", requestType, "r", r, "error", error)
+	}()
+	return lo.next.UpdateRequestType(ctx, requestType)
+}
+func (lo loggingMiddleware) UpdateDocumentType(ctx context.Context, documentType io.DocumentType) (d io.DocumentType, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateDocumentType", "documentType", documentType, "d", d, "error", error)
+	}()
+	return lo.next.UpdateDocumentType(ctx, documentType)
+}
+
+func (lo loggingMiddleware) UpdateConvention(ctx context.Context, convention io.Convention) (c io.Convention, error error) {
+	defer func() {
+		lo.logger.Log("method", "UpdateConvention", "convention", convention, "c", c, "error", error)
+	}()
+	return lo.next.UpdateConvention(ctx, convention)
+}

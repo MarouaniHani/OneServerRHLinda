@@ -68,6 +68,15 @@ func defaultHttpOptions(logger log.Logger, tracer opentracinggo.Tracer) map[stri
 		"GetLeaveRequestByMultiCriteria": {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetLeaveRequestByMultiCriteria", logger))},
 		"GetRequestType":                 {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "GetRequestType", logger))},
 		"Update":                         {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "Update", logger))},
+		"UpdateAdminRequest":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateAdminRequest", logger))},
+		"UpdateContractType":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateContractType", logger))},
+		"UpdateConvention":               {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateConvention", logger))},
+		"UpdateDepartment":               {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateDepartment", logger))},
+		"UpdateDocumentType":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateDocumentType", logger))},
+		"UpdateEmployeeRole":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateEmployeeRole", logger))},
+		"UpdateEvent":                    {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateEvent", logger))},
+		"UpdateLeaveRequest":             {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateLeaveRequest", logger))},
+		"UpdateRequestType":              {http.ServerErrorEncoder(http1.ErrorEncoder), http.ServerErrorLogger(logger), http.ServerBefore(opentracing.HTTPToContext(tracer, "UpdateRequestType", logger))},
 	}
 	return options
 }
@@ -82,49 +91,58 @@ func addDefaultEndpointMiddleware(logger log.Logger, duration *prometheus.Summar
 	mw["GetDepartment"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetDepartment")), endpoint.InstrumentingMiddleware(duration.With("method", "GetDepartment"))}
 	mw["AddDepartment"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddDepartment")), endpoint.InstrumentingMiddleware(duration.With("method", "AddDepartment"))}
 	mw["DeleteDepartment"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteDepartment")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteDepartment"))}
+	mw["UpdateDepartment"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateDepartment")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateDepartment"))}
 	mw["GetByIDDepartment"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDDepartment")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDDepartment"))}
 	mw["GetEvent"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetEvent")), endpoint.InstrumentingMiddleware(duration.With("method", "GetEvent"))}
 	mw["AddEvent"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddEvent")), endpoint.InstrumentingMiddleware(duration.With("method", "AddEvent"))}
 	mw["DeleteEvent"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteEvent")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteEvent"))}
+	mw["UpdateEvent"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateEvent")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateEvent"))}
 	mw["GetByIDEvent"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDEvent")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDEvent"))}
 	mw["GetEventByMultiCriteria"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetEventByMultiCriteria")), endpoint.InstrumentingMiddleware(duration.With("method", "GetEventByMultiCriteria"))}
 	mw["GetAdminRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetAdminRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "GetAdminRequest"))}
 	mw["AddAdminRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddAdminRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "AddAdminRequest"))}
 	mw["DeleteAdminRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteAdminRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteAdminRequest"))}
+	mw["UpdateAdminRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateAdminRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateAdminRequest"))}
 	mw["GetByIDAdminRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDAdminRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDAdminRequest"))}
 	mw["GetAdminRequestByMultiCriteria"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetAdminRequestByMultiCriteria")), endpoint.InstrumentingMiddleware(duration.With("method", "GetAdminRequestByMultiCriteria"))}
 	mw["GetLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "GetLeaveRequest"))}
 	mw["AddLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "AddLeaveRequest"))}
 	mw["DeleteLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteLeaveRequest"))}
+	mw["UpdateLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateLeaveRequest"))}
 	mw["GetByIDLeaveRequest"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDLeaveRequest")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDLeaveRequest"))}
 	mw["GetLeaveRequestByMultiCriteria"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetLeaveRequestByMultiCriteria")), endpoint.InstrumentingMiddleware(duration.With("method", "GetLeaveRequestByMultiCriteria"))}
 	mw["GetConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "GetConvention"))}
 	mw["AddConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "AddConvention"))}
 	mw["DeleteConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteConvention"))}
+	mw["UpdateConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateConvention"))}
 	mw["GetByIDConvention"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDConvention")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDConvention"))}
 	mw["GetConventionByMultiCriteria"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetConventionByMultiCriteria")), endpoint.InstrumentingMiddleware(duration.With("method", "GetConventionByMultiCriteria"))}
 	mw["GetContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetContractType"))}
 	mw["AddContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "AddContractType"))}
 	mw["DeleteContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteContractType"))}
+	mw["UpdateContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateContractType"))}
 	mw["GetByIDContractType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDContractType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDContractType"))}
 	mw["GetEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "GetEmployeeRole"))}
 	mw["AddEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "AddEmployeeRole"))}
 	mw["DeleteEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteEmployeeRole"))}
+	mw["UpdateEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateEmployeeRole"))}
 	mw["GetByIDEmployeeRole"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDEmployeeRole")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDEmployeeRole"))}
 	mw["GetRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetRequestType"))}
 	mw["AddRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "AddRequestType"))}
 	mw["DeleteRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteRequestType"))}
+	mw["UpdateRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateRequestType"))}
 	mw["GetByIDRequestType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDRequestType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDRequestType"))}
 	mw["GetDocumentType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetDocumentType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetDocumentType"))}
 	mw["AddDocumentType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "AddDocumentType")), endpoint.InstrumentingMiddleware(duration.With("method", "AddDocumentType"))}
 	mw["DeleteDocumentType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "DeleteDocumentType")), endpoint.InstrumentingMiddleware(duration.With("method", "DeleteDocumentType"))}
+	mw["UpdateDocumentType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "UpdateDocumentType")), endpoint.InstrumentingMiddleware(duration.With("method", "UpdateDocumentType"))}
 	mw["GetByIDDocumentType"] = []endpoint1.Middleware{endpoint.LoggingMiddleware(log.With(logger, "method", "GetByIDDocumentType")), endpoint.InstrumentingMiddleware(duration.With("method", "GetByIDDocumentType"))}
 }
 func addDefaultServiceMiddleware(logger log.Logger, mw []service.Middleware) []service.Middleware {
 	return append(mw, service.LoggingMiddleware(logger))
 }
 func addEndpointMiddlewareToAllMethods(mw map[string][]endpoint1.Middleware, m endpoint1.Middleware) {
-	methods := []string{"Get", "Add", "Delete", "Update", "GetByID", "GetByCreteria", "GetByMultiCriteria", "GetDepartment", "AddDepartment", "DeleteDepartment", "GetByIDDepartment", "GetEvent", "AddEvent", "DeleteEvent", "GetByIDEvent", "GetEventByMultiCriteria", "GetAdminRequest", "AddAdminRequest", "DeleteAdminRequest", "GetByIDAdminRequest", "GetAdminRequestByMultiCriteria", "GetLeaveRequest", "AddLeaveRequest", "DeleteLeaveRequest", "GetByIDLeaveRequest", "GetLeaveRequestByMultiCriteria", "GetConvention", "AddConvention", "DeleteConvention", "GetByIDConvention", "GetConventionByMultiCriteria", "GetContractType", "AddContractType", "DeleteContractType", "GetByIDContractType", "GetEmployeeRole", "AddEmployeeRole", "DeleteEmployeeRole", "GetByIDEmployeeRole", "GetRequestType", "AddRequestType", "DeleteRequestType", "GetByIDRequestType", "GetDocumentType", "AddDocumentType", "DeleteDocumentType", "GetByIDDocumentType"}
+	methods := []string{"Get", "Add", "Delete", "Update", "GetByID", "GetByCreteria", "GetByMultiCriteria", "GetDepartment", "AddDepartment", "DeleteDepartment", "UpdateDepartment", "GetByIDDepartment", "GetEvent", "AddEvent", "DeleteEvent", "UpdateEvent", "GetByIDEvent", "GetEventByMultiCriteria", "GetAdminRequest", "AddAdminRequest", "DeleteAdminRequest", "UpdateAdminRequest", "GetByIDAdminRequest", "GetAdminRequestByMultiCriteria", "GetLeaveRequest", "AddLeaveRequest", "DeleteLeaveRequest", "UpdateLeaveRequest", "GetByIDLeaveRequest", "GetLeaveRequestByMultiCriteria", "GetConvention", "AddConvention", "DeleteConvention", "UpdateConvention", "GetByIDConvention", "GetConventionByMultiCriteria", "GetContractType", "AddContractType", "DeleteContractType", "UpdateContractType", "GetByIDContractType", "GetEmployeeRole", "AddEmployeeRole", "DeleteEmployeeRole", "UpdateEmployeeRole", "GetByIDEmployeeRole", "GetRequestType", "AddRequestType", "DeleteRequestType", "UpdateRequestType", "GetByIDRequestType", "GetDocumentType", "AddDocumentType", "DeleteDocumentType", "UpdateDocumentType", "GetByIDDocumentType"}
 	for _, v := range methods {
 		mw[v] = append(mw[v], m)
 	}
