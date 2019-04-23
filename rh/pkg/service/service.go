@@ -143,7 +143,6 @@ func (b *basicRhService) Update(ctx context.Context, employee io.Employee) (e io
 	fmt.Println("check values :", employee.Address)
 	return employee, error
 }
-
 func (b *basicRhService) GetByID(ctx context.Context, id string) (e io.Employee, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
@@ -259,15 +258,15 @@ func (b *basicRhService) GetByMultiCriteria(ctx context.Context, urlMap string) 
 }
 
 // Department services
-func (b *basicRhService) GetDepartment(ctx context.Context) (d []io.Department, error error) {
+func (b *basicRhService) GetDepartment(ctx context.Context) (department []io.Department, error error) {
 	session, err := db.GetMongoSession()
 	if err != nil {
-		return d, err
+		return nil, err
 	}
 	defer session.Close()
 	c := session.DB("Linda_app").C("departments")
-	error = c.Find(nil).All(&d)
-	return d, error
+	error = c.Find(nil).All(&department)
+	return department, nil
 }
 func (b *basicRhService) AddDepartment(ctx context.Context, department io.Department) (d io.Department, error error) {
 	department.ID = bson.NewObjectId()
